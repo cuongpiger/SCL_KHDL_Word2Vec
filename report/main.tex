@@ -1,0 +1,289 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{multirow}
+\usepackage[utf8]{vietnam}
+\usepackage{tipa}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{listings}
+\lstset{
+  basicstyle=\ttfamily,
+  columns=fullflexible,
+  frame=single,
+  breaklines=true,
+  postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+  literate=%
+    {đ}{{\dj}}1
+    {â}{{\^a}}1
+    {ă}{{\u{a}}}1
+    {ê}{{\^e}}1
+    {ô}{{\^o}}1
+    {ơ}{{\ohorn}}1
+    {ư}{{\uhorn}}1
+    {á}{{\'a}}1
+    {à}{{\`a}}1
+    {ả}{\h{a}}1
+    {ã}{{\~a}}1
+    {ạ}{\textsubdot{a}}1
+    {ấ}{\'{\^a}}1
+    {ầ}{\`{\^a}}1
+    {ẩ}{\h{\^a}}1
+    {ẫ}{\~{\^a}}1
+    {ậ}{\textsubdot{\^a}}1
+    {ắ}{\'{\u{a}}}1
+    {ằ}{\`{\u{a}}}1
+    {ẳ}{\h{\u{a}}}1
+    {ẵ}{\~{\u{a}}}1
+    {ặ}{\textsubdot{\u{a}}}1
+    {é}{{\'e}}1
+    {è}{{\`e}}1
+    {ẻ}{\h{e}}1
+    {ẽ}{{\~e}}1
+    {ẹ}{\textsubdot{e}}1
+    {ế}{\'{\^e}}1
+    {ề}{\`{\^e}}1
+    {ể}{\h{\^e}}1
+    {ễ}{\~{\^e}}1
+    {ệ}{\textsubdot{\^{e}}}1
+    {í}{{\'i}}1
+    {ì}{{\`i}}1
+    {ỉ}{\h{i}}1
+    {ĩ}{{\~i}}1
+    {ị}{\textsubdot{i}}1
+    {ó}{{\'o}}1
+    {ò}{{\`o}}1
+    {ỏ}{\h{o}}1
+    {õ}{{\~o}}1
+    {ọ}{\textsubdot{o}}1
+    {ố}{\'{\^o}}1
+    {ồ}{\`{\^o}}1
+    {ổ}{\h{\^o}}1
+    {ỗ}{\~{\^o}}1
+    {ộ}{\textsubdot{\^o}}1
+    {ớ}{\'{\ohorn}}1
+    {ờ}{\`{\ohorn}}1
+    {ở}{\h{\ohorn}}1
+    {ỡ}{\~{\ohorn}}1
+    {ợ}{\textsubdot{\ohorn}}1
+    {ú}{{\'u}}1
+    {ù}{{\`u}}1
+    {ủ}{\h{u}}1
+    {ũ}{{\~u}}1
+    {ụ}{\textsubdot{u}}1
+    {ứ}{\'{\uhorn}}1
+    {ừ}{\`{\uhorn}}1
+    {ử}{\h{\uhorn}}1
+    {ữ}{\~{\uhorn}}1
+    {ự}{\textsubdot{\uhorn}}1
+    {ý}{{\'y}}1
+    {ỳ}{{\`y}}1
+    {ỷ}{\h{y}}1
+    {ỹ}{{\~y}}1
+    {ỵ}{\textsubdot{y}}1
+    {Đ}{{\DJ}}1
+    {Â}{{\^A}}1
+    {Ă}{{\u{A}}}1
+    {Ê}{{\^E}}1
+    {Ô}{{\^O}}1
+    {Ơ}{{\OHORN}}1
+    {Ư}{{\UHORN}}1
+    {Á}{{\'A}}1
+    {À}{{\`A}}1
+    {Ả}{\h{A}}1
+    {Ã}{{\~A}}1
+    {Ạ}{\textsubdot{A}}1
+    {Ấ}{\'{\^A}}1
+    {Ầ}{\`{\^A}}1
+    {Ẩ}{\h{\^A}}1
+    {Ẫ}{\~{\^A}}1
+    {Ậ}{\textsubdot{\^A}}1
+    {Ắ}{\'{\u{A}}}1
+    {Ằ}{\`{\u{A}}}1
+    {Ẳ}{\h{\u{A}}}1
+    {Ẵ}{\~{\u{A}}}1
+    {Ặ}{\textsubdot{\u{A}}}1
+    {É}{{\'E}}1
+    {È}{{\`E}}1
+    {Ẻ}{\h{E}}1
+    {Ẽ}{{\~E}}1
+    {Ẹ}{\textsubdot{E}}1
+    {Ế}{\'{\^E}}1
+    {Ề}{\`{\^E}}1
+    {Ể}{\h{\^E}}1
+    {Ễ}{\~{\^E}}1
+    {Ệ}{\textsubdot{\^{E}}}1
+    {Í}{{\'I}}1
+    {Ì}{{\`I}}1
+    {Ỉ}{\h{I}}1
+    {Ĩ}{{\~I}}1
+    {Ị}{\textsubdot{I}}1
+    {Ó}{{\'O}}1
+    {Ò}{{\`O}}1
+    {Ỏ}{\h{O}}1
+    {Õ}{{\~O}}1
+    {Ọ}{\textsubdot{O}}1
+    {Ố}{\'{\^O}}1
+    {Ồ}{\`{\^O}}1
+    {Ổ}{\h{\^O}}1
+    {Ỗ}{\~{\^O}}1
+    {Ộ}{\textsubdot{\^O}}1
+    {Ớ}{\'{\OHORN}}1
+    {Ờ}{\`{\OHORN}}1
+    {Ở}{\h{\OHORN}}1
+    {Ỡ}{\~{\OHORN}}1
+    {Ợ}{\textsubdot{\OHORN}}1
+    {Ú}{{\'U}}1
+    {Ù}{{\`U}}1
+    {Ủ}{\h{U}}1
+    {Ũ}{{\~U}}1
+    {Ụ}{\textsubdot{U}}1
+    {Ứ}{\'{\UHORN}}1
+    {Ừ}{\`{\UHORN}}1
+    {Ử}{\h{\UHORN}}1
+    {Ữ}{\~{\UHORN}}1
+    {Ự}{\textsubdot{\UHORN}}1
+    {Ý}{{\'Y}}1
+    {Ỳ}{{\`Y}}1
+    {Ỷ}{\h{Y}}1
+    {Ỹ}{{\~Y}}1
+    {Ỵ}{\textsubdot{Y}}1}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=blue, filecolor=magenta, urlcolor=cyan}
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=2cm,right=2cm,marginparwidth=1.75cm]{geometry}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{listings}
+\usepackage{indentfirst}
+\lstset{basicstyle=\ttfamily, showstringspaces=false, commentstyle=\color{red}, keywordstyle=\color{blue}}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\makeatletter
+\renewcommand\paragraph{\@startsection{paragraph}{4}{\z@}
+            {-2.5ex\@plus -1ex \@minus -.25ex}
+            {1.25ex \@plus .25ex}
+            {\normalfont\normalsize\bfseries}}
+\makeatother
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+
+
+\newcommand{\leftIndent}{\setlength{\parindent}{0.6cm}}
+\newcommand{\lleftIndent}{\setlength{\parindent}{1.2cm}}
+
+\begin{document}
+\begin{titlepage}
+
+  \newcommand{\HRule}{\rule{\linewidth}{0.5mm}} 
+  
+  \center
+  
+  \textsc{\LARGE Đại học Khoa học tự nhiên}\\[1.5cm] 
+  \textsc{\Large Môn học: Khoa Học Dữ Liệu}\\[0.5cm] 
+  \textsc{\large Báo cáo đồ án cuối kỳ}\\[0.5cm] 
+  
+  \HRule \\[0.4cm]
+  { \huge \bfseries Word2Vec}\\[0.4cm]
+  \HRule \\[1.5cm]
+
+  \begin{minipage}{0.4\textwidth}
+  \begin{flushleft} \large
+  \emph{\textbf{Giảng viên}}\\
+  Nguyễn Ngọc Đức 
+  \end{flushleft}
+  \end{minipage}
+  ~
+  \begin{minipage}{0.4\textwidth}
+  \begin{flushright}
+    \large \emph{\\[3cm]\textbf{Sinh viên}} \\
+    20424008 - Dương Mạnh Cường
+  \end{flushright}
+  \end{minipage}\\[2cm]
+
+  \includegraphics{./images/logo_hcmus.png}\\[1cm]
+  \vfill
+
+  \today
+  
+  \end{titlepage}
+
+\tableofcontents
+\newpage
+
+Neural network yêu cầu đầu vào ở dạng \textbf{numeric}. Cho nên, khi ta có dữ liệu dạng \textbf{text}, ta cần chuyển đổi chúng thành dữ liệu dạng numeric.\\
+
+\indent Có nhiều phương pháp khác nhau để chuyển đổi dữ liệu dạng text sang numeric mà phổ biến nhất là:
+\begin{itemize}
+  \setlength{\itemindent}{0.6cm}
+  \item Term frequency-inverse document frequency (TF-IDF).
+  \item Bag of words (BOW).
+\end{itemize}
+
+\vskip 0.5cm
+\indent Tuy nhiên, điểm yếu của hai phương pháp trên là chúng \textbf{không nắm bắt được ngữ nghĩa của từ}, nói cách khác là chúng không hiểu được ý nghĩa của từ.\\
+
+\indent Có nhiều cách khắc phục nhược điểm này, mà một trong những cách đó là sử dụng \textbf{Word2Vec} bằng cách đại diện cho từng từ bằng một \textbf{vector} trong không gian $n$ chiều. Lúc này, các từ có nghĩa tương đồng nhau sẽ nằm gần nhau.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.4\textwidth]{./images/01.png}
+  \caption{Các từ có ý nghĩa tương đồng nhau nằm gần nhau.}
+\end{figure}
+
+\section{Word2Vec model}
+Word2Vec là một trong những phương pháp \textbf{word embedding} được sử dụng phổ biến.\\
+
+\indent Word embedding là cách ta biểu diễn các \textbf{word vector} trong không gian vector.\\
+
+\indent Các word vector được tạo ra bởi Word2Vec model có khả năng nắm bắt được các \textbf{semantic} \textit{(ngữ nghĩa)} và \textbf{syntactic} \textit{(ý nghĩa cú pháp)} của từ.\\
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{images/03.png}
+  \caption{Ví dụ về \textbf{semantic} và \textbf{syntactic}.}
+\end{figure}
+
+\indent Ví dụ có câu: \textsl{"Archie used to live in New York, he then moved to Santa Clara. He loves apples and strawberries."}.\\
+
+\indent Word2Vec model sẽ phát sinh các vector cho từng từ trong văn bản. Nếu chúng ta trực quan các vector này trong không gian vector tương ứng, chúng ta có thể thấy các từ tương tự nhau sẽ nằm gần nhau.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.95\textwidth]{images/02.png}
+  \caption{Các từ trong câu ví dụ được biểu diễn trong không gian vector.}
+\end{figure}
+\begin{tcolorbox}[grow to left by=-0.6cm]
+  \textbf{Nhận xét}
+  \begin{itemize}
+    \item Ở đây các cặp từ như \textsl{apples} - \textsl{strawberries}, \textsl{New York} - \textsl{Santa Clara} có ý nghĩa tương đồng nhau nên nằm gần nhau.
+  \end{itemize}
+\end{tcolorbox}
+
+\end{document}

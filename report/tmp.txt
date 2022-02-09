@@ -1,0 +1,65 @@
+
+\section{Section level 1}
+First paragraph under section level 1.\\
+
+\indent Second paragraph: \url{https://this_is_your_url}.
+
+\subsection{Section level 2}
+First paragraph under section level 2.\\
+
+\textbf{Bước 1}: Title for image
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{./images/sample.png}
+  \caption{This is caption for image.}
+\end{figure}
+
+\lleftIndent This is left left indent \href{https://medium.com/@jootorres_11979/how-to-set-up-a-hadoop-3-2-1-multi-node-cluster-on-ubuntu-18-04-2-nodes-567ca44a3b12}{This is href tag}.\\
+
+\lleftIndent This is title for code block.
+\begin{lstlisting}[language=bash]
+# terminal máy master
+
+./start-all.sh
+\end{lstlisting}
+
+% This is vskip
+\vskip 0.5cm
+
+\subsubsection{Section level 3}
+\begin{flushleft}
+  \begin{itemize}
+    \setlength{\itemindent}{0.6cm}
+    \item \texttt{\color{purple} main.ipynb}: some text.
+    \item \texttt{\color{purple} main\_hadoop.ipynb}: some text.
+    \item \texttt{\color{purple} data/cruise\_ship\_info.csv}: some text.
+  \end{itemize}
+\end{flushleft}
+\paragraph{Section level 4}
+This is text under section level 4.\\
+
+\indent Trong dataset này sẽ có các feature:
+\begin{itemize}
+  \setlength{\itemindent}{0.6cm}
+  \item \textsf{Age}: tuổi của tàu (tính đến năm 2013).
+  \item \textsf{passengers}: số hàng khách ($\times 100 \text{ người}$).
+\end{itemize}
+
+\indent Import các thư viện cần thiết.
+\begin{lstlisting}[language=python]
+from pyspark.sql.session import SparkSession
+from pyspark.sql.functions import corr
+from pyspark.ml.feature import StringIndexer, VectorAssembler
+from pyspark.ml.regression import LinearRegression
+from pyspark import SparkContext
+
+import os
+import findspark
+\end{lstlisting}
+
+\begin{tcolorbox}[grow to left by=-0.6cm]
+  \textbf{Nhận xét}
+  \begin{itemize}
+    \item Tập dữ liệu \texttt{./data/cruise\_ship\_info.csv} có tổng cộng 158 quan sát.
+  \end{itemize}
+\end{tcolorbox}
