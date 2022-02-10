@@ -302,4 +302,36 @@ Giả sử chúng ta có một neural network bao gồm: \textbf{một input lay
 
 \includeImage{0.7}{04}{Target word và context word trong CBOW model.}
 
+\indent Lúc này input của network là các context word và output của network là target word. Và vì neural network chỉ chấp nhận input là numeric data nên chúng ta sẽ sử dụng kỹ thuật \textbf{one-hot encoding} để chuyển đổi các text data thành numeric data.
+
+\includeImage{0.6}{05}{One-hot encoding cho text data.}
+
+\indent Kiến trúc của CBOW model được thể hiện dưới hình sau. Ở đây các context word là: \textsl{the}, \textsl{sun}, \textsl{in} và \textsl{east} được dùng làm đầu vào cho network và dự đoán ra target word là \textsl{rises} ở đầu ra.
+
+\includeImage{0.99}{06}{Kiến trúc của CBOW model.}
+
+\indent Ở vài lần lặp đầu tiên, network không thể dự đoán target word một cách chính xác. Nhưng sau một loạt các vòng lặp bằng cách sử dụng \textbf{gradient descent}, các \textbf{weight} \textit{(trọng số)} của network được cập nhật và tìm ra được \textbf{optimal weight} \textit{(trọng số thích hợp)} để dự đoán ra target word một cách chính xác.
+
+\vskip 0.5cm
+\indent Vì chúng ta có một input layer, một hidden layer và một output layer, nên chúng ta sẽ có hai weight:
+\begin{enumerate}
+  \itemsizePaddingLeft
+  \item Weight từ input layer đến hidden layer - $\boldsymbol{W}$.
+  \item Weight từ hidden layer đến output layer - $\boldsymbol{W'}$.
+\end{enumerate}
+
+\indent Trong quá trình đào tạo network, các weight sẽ được cập nhật trong quá trình back propagation nhằm tìm ra optimal weight cho hai bộ $\boldsymbol{W}$ và $\boldsymbol{W'}$.
+
+\vskip 0.5cm
+\indent Về sau, weight set giữa input layer và hidden layer $\boldsymbol{W}$ được cập nhật và tối ưu tạo thành các vector đại diện cho các từ của input layer.\\
+
+\indent Sau khi kết thúc quá trình đào tạo, chúng ta chỉ cần loại bỏ output layer và lấy ra weight set giữa input layer và hidden layer và gán chúng cho các từ tương ứng.\\
+
+\indent Dưới đây là các vector tương ứng cho các từ của $\boldsymbol{W}$. Word embedding tương ứng cho từ \textsl{sun} là $\begin{bmatrix} 0.0 & 0.3 & 0.3 & 0.6 & 0.1 \\ \end{bmatrix}$.
+
+$$\boldsymbol{W} = \text{ } \begin{matrix} the \\ sun \\ rises \\ in \\ east \end{matrix} \begin{bmatrix} 0.01 & 0.02 & 0.1 & 0.5 & 0.37 \\ 0.0 & 0.3 & 0.3 & 0.6 & 0.1 \\ 0.4 & 0.34 & 0.11 & 0.61 & 0.43 \\ 0.1 & 0.11 & 0.1 & 0.17 & 0.369 \\ 0.33 & 0.4 & 0.3 & 0.17 & 0.1 \\ \end{bmatrix}$$
+
+\subsubsection{CBOW model với một context word}
+CBOW model cần một số lượng context word $C$ nhất định để dự đoán target word. Ở phần này chúng ta sẽ xem xét trường hợp chỉ sử dụng duy nhất một context word, tức $C = 1$. Lúc này netword nhận vào một context word ở đầu vào và trả về một target word ở đầu ra.
+
 \end{document}
