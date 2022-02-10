@@ -197,6 +197,13 @@
 
 \newcommand{\leftIndent}{\setlength{\parindent}{0.6cm}}
 \newcommand{\lleftIndent}{\setlength{\parindent}{1.2cm}}
+\newcommand{\itemsizePaddingLeft}{\setlength{\itemindent}{0.6cm}}
+\newcommand{\includeImage}[3]{
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=#1\textwidth]{images/#2.png}
+  \def\temp{#3}\ifx\temp\empty\else\caption{#3}\fi
+\end{figure}}
 
 \begin{document}
 \begin{titlepage}
@@ -249,13 +256,9 @@ Neural network yêu cầu đầu vào ở dạng \textbf{numeric}. Cho nên, khi
 \vskip 0.5cm
 \indent Tuy nhiên, điểm yếu của hai phương pháp trên là chúng \textbf{không nắm bắt được ngữ nghĩa của từ}, nói cách khác là chúng không hiểu được ý nghĩa của từ.\\
 
-\indent Có nhiều cách khắc phục nhược điểm này, mà một trong những cách đó là sử dụng \textbf{Word2Vec} bằng cách đại diện cho từng từ bằng một \textbf{vector} trong không gian $n$ chiều. Lúc này, các từ có nghĩa tương đồng nhau sẽ nằm gần nhau.
+\indent Có nhiều cách khắc phục nhược điểm này, mà một trong những cách đó là sử dụng \textbf{Word2Vec} bằng cách đại diện cho từng từ bằng một \textbf{vector} trong không gian $m$ chiều. Lúc này, các từ có nghĩa tương đồng nhau sẽ nằm gần nhau.
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.4\textwidth]{./images/01.png}
-  \caption{Các từ có ý nghĩa tương đồng nhau nằm gần nhau.}
-\end{figure}
+\includeImage{0.4}{01}{Các từ có ý nghĩa tương đồng nhau nằm gần nhau.}
 
 \section{Word2Vec model}
 Word2Vec là một trong những phương pháp \textbf{word embedding} được sử dụng phổ biến.\\
@@ -264,26 +267,39 @@ Word2Vec là một trong những phương pháp \textbf{word embedding} được
 
 \indent Các word vector được tạo ra bởi Word2Vec model có khả năng nắm bắt được các \textbf{semantic} \textit{(ngữ nghĩa)} và \textbf{syntactic} \textit{(ý nghĩa cú pháp)} của từ.\\
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\textwidth]{images/03.png}
-  \caption{Ví dụ về \textbf{semantic} và \textbf{syntactic}.}
-\end{figure}
+\includeImage{1}{03}{Ví dụ về \textbf{semantic} và \textbf{syntactic}.}
 
 \indent Ví dụ có câu: \textsl{"Archie used to live in New York, he then moved to Santa Clara. He loves apples and strawberries."}.\\
 
 \indent Word2Vec model sẽ phát sinh các vector cho từng từ trong văn bản. Nếu chúng ta trực quan các vector này trong không gian vector tương ứng, chúng ta có thể thấy các từ tương tự nhau sẽ nằm gần nhau.
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.95\textwidth]{images/02.png}
-  \caption{Các từ trong câu ví dụ được biểu diễn trong không gian vector.}
-\end{figure}
+\includeImage{0.95}{02}{Các từ trong câu ví dụ được biểu diễn trong không gian vector}
 \begin{tcolorbox}[grow to left by=-0.6cm]
   \textbf{Nhận xét}
   \begin{itemize}
     \item Ở đây các cặp từ như \textsl{apples} - \textsl{strawberries}, \textsl{New York} - \textsl{Santa Clara} có ý nghĩa tương đồng nhau nên nằm gần nhau.
   \end{itemize}
 \end{tcolorbox}
+
+\vskip 0.5cm
+\indent Do đó, với Word2Vec model có thể học cách biểu diễn các vector giúp cho neural network có thể hiểu được ý nghĩa của từ tương ứng với vector đó.\\
+
+\indent Và vì chúng ta có thể hiểu được semantic và syntactic của từ điều này giúp ta tận dụng các vector này vào các bài toán như \textbf{text summarization} \textit{(tóm tắt văn bản)}, \textbf{sentiment analysis} \textit{(phân tích tình cảm)}, \textbf{text generation} \textit{(tạo văn bản)},...\\
+
+\indent Có hai cách để xây dựng Word2Vec model:
+\begin{enumerate}
+  \itemsizePaddingLeft
+  \item \textbf{CBOW model}.
+  \item \textbf{Skip-gram model}.
+\end{enumerate}
+
+\subsection{CBOW model}
+Giả sử chúng ta có một neural network bao gồm: \textbf{một input layer}, \textbf{một hidden layer} và \textbf{một output layer}. Mục đích của network này là dự đoán ra \textbf{một từ} dựa vào \textbf{các từ xung quanh nó}. Từ mà chúng ta cố gắng dự đoán được gọi là \textbf{target word} và các từ xung quanh nó được gọi là \textbf{context word}.\\
+
+\indent Vậy chúng ta cần bao nhiêu context word để dự đoán ra target word? Chúng ta sẽ sử dụng một \textbf{window} \textit{(cửa sổ)} có kích thước là $n$ để chọn các context word. Nếu $n = 2$ thì chúng ta sẽ sử dụng hai từ \textbf{phía trước} và \textbf{phía sau} của target word làm các context word.\\
+
+\indent Xem xét câu sau: \textsl{"The Sun rises in the east."} với \textsl{rises} là target word. Nếu chúng ta xét kích thước của window là $2$ thì chúng ta sẽ lấy hai từ phía trước là \textsl{The}, \textsl{Sun} và hai từ phía sau là \textsl{in}, \textsl{the} của target word làm các context word.\\
+
+\includeImage{0.7}{04}{Target word và context word trong CBOW model.}
 
 \end{document}
