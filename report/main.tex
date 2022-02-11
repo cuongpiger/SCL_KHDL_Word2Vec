@@ -5,6 +5,7 @@
 \usepackage{tipa}
 \usepackage{float}
 \usepackage{caption}
+\usepackage{amsfonts}
 \usepackage{amsmath}
 \usepackage{graphicx}
 \usepackage[colorinlistoftodos]{todonotes}
@@ -194,7 +195,7 @@
 \setcounter{secnumdepth}{4}
 \setcounter{tocdepth}{4}
 
-
+\newcommand{\twiceIndent}{\hspace{\parindent}}
 \newcommand{\leftIndent}{\setlength{\parindent}{0.6cm}}
 \newcommand{\lleftIndent}{\setlength{\parindent}{1.2cm}}
 \newcommand{\itemsizePaddingLeft}{\setlength{\itemindent}{0.6cm}}
@@ -208,7 +209,7 @@
 \begin{document}
 \begin{titlepage}
 
-  \newcommand{\HRule}{\rule{\linewidth}{0.5mm}} 
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} 
   
   \center
   
@@ -308,7 +309,7 @@ Giả sử chúng ta có một neural network bao gồm: \textbf{một input lay
 
 \indent Kiến trúc của CBOW model được thể hiện dưới hình sau. Ở đây các context word là: \textsl{the}, \textsl{sun}, \textsl{in} và \textsl{east} được dùng làm đầu vào cho network và dự đoán ra target word là \textsl{rises} ở đầu ra.
 
-\includeImage{0.99}{06}{Kiến trúc của CBOW model.}
+\includeImage{0.99}{06}{Kiến trúc của CBOW model 1.}
 
 \indent Ở vài lần lặp đầu tiên, network không thể dự đoán target word một cách chính xác. Nhưng sau một loạt các vòng lặp bằng cách sử dụng \textbf{gradient descent}, các \textbf{weight} \textit{(trọng số)} của network được cập nhật và tìm ra được \textbf{optimal weight} \textit{(trọng số thích hợp)} để dự đoán ra target word một cách chính xác.
 
@@ -332,6 +333,120 @@ Giả sử chúng ta có một neural network bao gồm: \textbf{một input lay
 $$\boldsymbol{W} = \text{ } \begin{matrix} the \\ sun \\ rises \\ in \\ east \end{matrix} \begin{bmatrix} 0.01 & 0.02 & 0.1 & 0.5 & 0.37 \\ 0.0 & 0.3 & 0.3 & 0.6 & 0.1 \\ 0.4 & 0.34 & 0.11 & 0.61 & 0.43 \\ 0.1 & 0.11 & 0.1 & 0.17 & 0.369 \\ 0.33 & 0.4 & 0.3 & 0.17 & 0.1 \\ \end{bmatrix}$$
 
 \subsubsection{CBOW model với một context word}
-CBOW model cần một số lượng context word $C$ nhất định để dự đoán target word. Ở phần này chúng ta sẽ xem xét trường hợp chỉ sử dụng duy nhất một context word, tức $C = 1$. Lúc này netword nhận vào một context word ở đầu vào và trả về một target word ở đầu ra.
+CBOW model cần một số lượng context word $C$ nhất định để dự đoán target word. Ở phần này chúng ta sẽ xem xét trường hợp chỉ sử dụng duy nhất một context word, tức $C = 1$. Lúc này netword nhận vào một context word ở đầu vào và trả về một target word ở đầu ra.\\
+
+\indent Trước tiên, chúng ta cần làm quen với một vài khái niệm. Tất cả các từ duy nhất nằm trong \textbf{corpus} \textit{(kho ngữ liệu)} của chúng ta được gọi là các \textbf{vocabulary} \textit{(từ vựng)}. Trong ví dụ trước đó của chúng ta, chúng ta có năm từ là: \textsl{the}, \textsl{sun}, \textsl{rises}, \textsl{in} và \textsl{east} - toàn bộ năm từ này chính là vocabulary trong corpus của chúng ta.\\
+
+\indent Đặt $V$ là số lượng vocabulary và $N$ là số neuron của hidden layer. Vì neural network của chúng ta có ba layer, cụ thể:
+\begin{itemize}
+  \itemsizePaddingLeft
+  \item Input layer được đại diện bởi $\boldsymbol{X} = \{\boldsymbol{x}_1,\boldsymbol{x}_2,\boldsymbol{x}_3,...,\boldsymbol{x}_k,...,\boldsymbol{x}_V \}$. Khi chúng ta nói $\boldsymbol{x}_k$, tức ta đang đề cập đến từ thứ $k$ trong corpus của chúng ta.
+  \item Hidden layer được đại diện bởi $\boldsymbol{H} = \{\boldsymbol{h}_1,\boldsymbol{h}_2,\boldsymbol{h}_3,...,\boldsymbol{h}_i,...,\boldsymbol{h}_N \}$. Khi chúng ta nói $\boldsymbol{h}_i$, tức ta đang đề cập đến neuron thứ $i$ trong hidden layer.
+  \item Output layer được đại diện bởi $\boldsymbol{Y} = \{\boldsymbol{y}_1,\boldsymbol{y}_2,\boldsymbol{y}_3,...,\boldsymbol{y}_j,...,\boldsymbol{y}_V \}$. Khi chúng ta nói $\boldsymbol{y}_j$, tức ta đang đề cập đến từ thứ $j$ trong output layer.
+\end{itemize}
+
+\vskip 0.5cm
+\indent Số chiều của $\boldsymbol{W}$ là $V \times N$, tức $\textit{số vocabulary} \times \textit{số neuron trong hidden layer}$. $W_{ki}$ đại diện cho một phần tử trong ma trận $\boldsymbol{W}$ giữa $\boldsymbol{x}_k$ trong input layer và $\boldsymbol{h}_i$ trong hidden layer.
+
+\vskip 0.5cm
+\indent Số chiều của $\boldsymbol{W'}$ là $N \times V$, tức $\textit{số neuron trong hidden layer} \times \textit{số vocabulary}$. $W'_{ij}$ đại diện cho một phần tử trong ma trận $\boldsymbol{W'}$ giữa $\boldsymbol{h}_i$ trong hidden layer và $\boldsymbol{y}_j$ trong output layer.
+     
+\includeImage{0.7}{07}{Kiến trúc của CBOW model 2.}
+
+\paragraph{Forward propagation}
+Để dự đoán target word từ các context word, chúng ta sẽ thực hiện quá trình forward propagation. Trước tiên, chúng ta nhân $\boldsymbol{X}$ cho $\boldsymbol{W}$.
+$$\boldsymbol{H} = \boldsymbol{XW}^T$$
+
+\indent Chúng ta biết rằng input là các one-hot vector, nên khi ta nhân $\boldsymbol{X}$ với $\boldsymbol{W}$ thì $\boldsymbol{H}$ lúc này đơn giản là:
+$$\boldsymbol{H} = \boldsymbol{W}_{(k,.)}$$
+
+\indent $\boldsymbol{W}_{(k,.)}$ về cơ bản là biểu diễn vector của input word. Đặt vector đại diện cho input word $w_I$ bằng $Z_{w_I}$. Lúc này phương trình trên có thể được viết thành.\\
+\begin{equation}
+  \boldsymbol{H} = Z_{w_I}
+\end{equation}
+
+\indent Bây giờ chúng ta đang ở hidden layer, tiếp theo chúng ta cần tính xác suất cho từng từ trong corpus để nó là một target word.\\
+
+\indent Đặt $\boldsymbol{u}_j$ là điểm số để từ thứ $j$ trong corpus là target word - được tính bằng cách nhân $\boldsymbol{H}$ cho $\boldsymbol{W'}$. Và vì chúng ta đang tính toán điểm số cho từ $j$ trong corpus, nên ta chỉ nhân cột $j$ trong $\boldsymbol{W'}$ cho $\boldsymbol{H}$.
+$$\boldsymbol{u}_j = \boldsymbol{W'}_{ij}^T \cdot \boldsymbol{H}$$
+\indent Lúc này, cột $j$ của $\boldsymbol{W'}_{ij}$ đại diện cho vector của từ $j$ trong corpus. Đặt vector đại diện cho từ thứ $j$ là $Z'_{w_j^T}$. Phương trình trên có thể được viết lại thành:
+\begin{equation}
+  \boldsymbol{u}_j = Z'_{w_j^T} \cdot \boldsymbol{H}
+\end{equation}
+
+\indent Thế phương trình $(1)$ vào phương trình $(2)$, ta được:
+$$\boldsymbol{u}_j = Z'_{w_j^T} \cdot Z_{w_I}$$
+
+\indent Việc tính toán dot product giữa $Z'_{w_j^T}$ và $Z_{w_I}$ nói cho chúng ta biết độ tương đồng giữa target word với các context word đầu vào. Cho nên nếu điểm số của từ $j$ trong corpus cao thì có nghĩa có sự tương đồng cao giữa các context word và target word $j$ này và ngược lại.\\
+
+\indent Cuối cùng, ta sẽ áp dụng softmax activation để chuyển đổi các điểm số này sang xác suất:
+\begin{equation}
+  \boldsymbol{y}_j = \dfrac{\exp{(\boldsymbol{u}}_j)}{\sum_{j'=1}^V \exp{(\boldsymbol{u}'_j)}}
+\end{equation}
+
+\indent Lúc này, $\boldsymbol{y}_j$ cho chúng ta biết xác suất của từ $j$ là target word. Chúng ta sẽ tính xác suất cho tất cả các từ trong corpus và chọn từ mà có xác suất cao nhất là target word.\\
+
+\indent Tiếp theo, chúng ta sẽ tính toán hàm loss. Đặt $\boldsymbol{y}_j^*$ là xác suất để từ $j$ chính xác là target word. Chúng ta cần tối đa xác suất này:
+$$\max{\boldsymbol{y}_j^*}$$
+
+\indent Và để giảm phạm vị khi tính hàm loss ta sẽ tính tối đa hàm log của xác suất.
+$$\max{\log{(\boldsymbol{y}_j^*)}}$$
+
+\indent Nhưng vì chúng ta sẽ áp dụng gradient descent để tìm ra optimal weight nên thay vì tối đa hóa ta sẽ tìm tối thiểu hóa công thức trên như sau:
+$$\min (-\log{(\boldsymbol{y}_j^*)})$$
+
+\indent Vậy lúc này loss function của chúng ta sẽ thành:
+\begin{equation}
+  \mathfrak{L} = -\log{(\boldsymbol{y}_j^*)}
+\end{equation}
+
+\indent Thế phương trình $(3)$ vào phương trình $(4)$ ta thu được:
+\[\begin{aligned}\mathfrak{L} &= - \log{\left ( \dfrac{\exp{(u_j)}}{\sum_{j'=1}^V \exp{(u'_j)}} \right )} \\
+   &= - \left ( \log{(\exp{(u_j)})} - \log{\left ( \sum_{j'=1}^V \exp{(u'_j)} \right )} \right ) \\ 
+   &= -\log{(\exp{(u_j)})} + \log{\left ( \sum_{j'=1}^V \exp{(u'_j)} \right )} \\
+   &= -u_j + \log{\left ( \sum_{j'=1}^V \exp{(u'_j)} \right )}\end{aligned}\]
+
+\paragraph{Backward propagation}
+Để tối thiểu hóa loss function, chúng ta sử dụng gradient descent. Chúng ta sẽ tính gradient của loss function để cập nhật weight.\\
+
+\indent Chúng ta có hai weight set là $\boldsymbol{W}$ và $\boldsymbol{W'}$. Trong quá trình backward propagration, chúng ta có thể tiến hành cập nhật weight cho chúng. Cụ thể như sau:
+$$\boldsymbol{W} = \boldsymbol{W} - \alpha \dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{W}}$$ 
+$$\boldsymbol{W'} = \boldsymbol{W'} - \alpha \dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{W'}}$$ 
+
+\indent Trước tiên, trong quá trình forward propagation chúng ta có các phương trình sau:
+$$\boldsymbol{H} = \boldsymbol{XW}^T$$
+$$\boldsymbol{u}_j = \boldsymbol{W'}_{ij}^T \cdot \boldsymbol{H}$$
+$$\mathfrak{L} = -\boldsymbol{u}_j + \log{\left ( \sum_{j'=1}^V \exp{(\boldsymbol{u'}_j)} \right )}$$
+
+\indent Trước tiên, chúng ta sẽ tính gradient của loss function cho $\boldsymbol{W'}$. Chúng ta không thể tính gradient của loss function đối với $\boldsymbol{W'}$ trực tiếp. Cho nên chúng ta phải áp dụng \textbf{chain rule} như sau:
+$$\dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{W'}_{ij}} = \dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{u}_j} \cdot \dfrac{\partial \boldsymbol{u}_j}{\partial \boldsymbol{W'}_{ij}}$$
+
+\indent Ta có đạo hàm của $\dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{u}_j}$ như sau:
+\begin{equation}
+  \dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{u}_j} = \boldsymbol{e}_j
+\end{equation}
+
+\twiceIndent với $\boldsymbol{e}_j$ là sự khác biệt giữa actual word và predicted word.
+
+\vskip 0.5cm
+$$\boldsymbol{u}_j = \boldsymbol{W'}_{ij}^T \cdot \boldsymbol{H}$$
+\indent Tiếp theo, chúng ta sẽ tính đạo hàm cho $\dfrac{\partial \boldsymbol{u}_j}{\partial \boldsymbol{W'}_{ij}}$, và bởi vì chúng ta biết $\boldsymbol{u}_j = \boldsymbol{W'}_{ij}^T \cdot \boldsymbol{H}$ nên:
+$$\dfrac{\partial \boldsymbol{u}_j}{\partial \boldsymbol{W'}_{ij}} = \boldsymbol{H}$$
+
+\indent Như vậy, gradient của loss function đối với $\boldsymbol{W'}$ bằng:
+$$\dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{W'}_{ij}} = \boldsymbol{e}_j \cdot \boldsymbol{H}$$
+
+\indent Tiếp theo, chúng ta cần tính gradient của loss function đối với $\boldsymbol{W}$, và chúng ta cũng không thể tính gradient trực tiếp nên chúng ta phải áp dụng chain rule.
+$$\dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{W}_{ki}} = \dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{h}_i} \cdot \dfrac{\partial \boldsymbol{h}_i}{\partial \boldsymbol{W}_{ki}}$$
+
+\indent Để tính đạo hàm của $\dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{h}_i}$, chúng ta áp dụng chain rule:
+$$\dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{h}_i} = \sum_{j=1}^V \dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{u}_j} \cdot \dfrac{\partial \boldsymbol{u}_j}{\boldsymbol{h}_i}$$
+
+\indent Thế phương trình $(5)$ vào phương trình trên, ta được:
+$$\dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{h}_i} = \sum_{j=1}^V \boldsymbol{e}_j \cdot \dfrac{\partial \boldsymbol{u}_j}{\boldsymbol{h}_i}$$
+
+\indent Và vì chúng ta biết $\boldsymbol{u}_j = \boldsymbol{W'}_{ij}^T \cdot \boldsymbol{H}$, tiếp tục thế vào phương trình trên chúng ta được:
+$$\dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{h}_i} = \sum_{j=1}^V \boldsymbol{e}_j \cdot \boldsymbol{W'}_{ij} = \mathfrak{L}\boldsymbol{H}^T$$
+
 
 \end{document}
