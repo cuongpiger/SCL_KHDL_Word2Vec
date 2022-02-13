@@ -448,5 +448,197 @@ $$\dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{h}_i} = \sum_{j=1}^V \bolds
 \indent Và vì chúng ta biết $\boldsymbol{u}_j = \boldsymbol{W'}_{ij}^T \cdot \boldsymbol{H}$, tiếp tục thế vào phương trình trên chúng ta được:
 $$\dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{h}_i} = \sum_{j=1}^V \boldsymbol{e}_j \cdot \boldsymbol{W'}_{ij} = \mathfrak{L}\boldsymbol{H}^T$$
 
+\indent Bây giờ chúng ta sẽ tính đạo hàm cho $\dfrac{\partial \boldsymbol{h}_i}{\partial \boldsymbol{W}_{ki}}$. Và vì chúng ta biết $\boldsymbol{H} = \boldsymbol{XW}^T$ nên:
+$$\dfrac{\partial \boldsymbol{h}_i}{\partial \boldsymbol{W}_{ki}} = \boldsymbol{X}$$
+
+\indent Cuối cùng, gradient của loss function đối với $\boldsymbol{W}$ là:
+$$\dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{W}_{ki}} = \boldsymbol{LH}^T \cdot \boldsymbol{X}$$
+
+\indent Như vậy, các set weight $\boldsymbol{W}$ và $\boldsymbol{W'}$ của chúng ta lần lượt được cập nhật trong quá trình backward propagation như sau:
+$$\boldsymbol{W} = \boldsymbol{W} - \alpha \boldsymbol{LH}^T \cdot \boldsymbol{X}$$
+$$\boldsymbol{W'} = \boldsymbol{W'} - \alpha \boldsymbol{e}_j \cdot \boldsymbol{H}$$
+
+\indent Chúng ta thực hiện cập nhật $\boldsymbol{W}$ và $\boldsymbol{W'}$ đến cuối quá trình đào tạo network, $\boldsymbol{W}$ của chúng ta lúc này đạt được trạng thái optimal weight, ta có thể lấy nó ra làm các word vector đại diện cho các vocabulary của chúng ta trong corpus.
+
+\indent Dưới đây là mã nguồn Python để tìm kiếm các word vector.
+\begin{lstlisting}[language=python]
+def single_context_CBOW(x, label, W1, W2, loss):
+  # forward propagation
+  h = np.dot(W1.T, x)
+  u = np.dot(W2.T, h)
+  y_pred = softmax(u)
+
+  # error giữa actual value và predicted value
+  dW2 = np.outer(h, e)
+  dW1 = np.outer(x, np.dot(W2.T, e))
+
+  # cập nhật các weight set
+  W1 = W1 - lr * dW1
+  W2 = W2 - lr * dW2
+
+  # loss function
+  loss += -float(u[label] == 1) + np.log(np.sum(np.exp(u)))
+
+  return W1, W2, loss
+\end{lstlisting}
+
+\subsubsection{CBOW model với multiple context words}
+Bây giờ, chúng ta sẽ tìm hiểu cách CBOW model với multiple context words hoạt động. Kiến trúc của CBOW model với multiple context words như sau:
+
+\includeImage{1}{08}{Kiến trúc của CBOW model với multiple context words.}
+
+\indent Không có nhiều sự khác biệt giữa single context word và multiple context words. Sự khác biệt là với multiple context words, chúng ta lấy giá trị trung bình của tất cả các context word đầu vào. Cụ thể với $C$ context word $\boldsymbol{X}_1, \boldsymbol{X}_2, \hdots, \boldsymbol{X}_C$, chúng ta thực hiện:
+$$\begin{aligned}\boldsymbol{H} &= \dfrac{(\boldsymbol{X}_1 + \boldsymbol{X}_2 + \hdots + \boldsymbol{X}_C)}{C} \boldsymbol{W}^T \\ &= \dfrac{1}{C}(\boldsymbol{X}_1 \boldsymbol{W}^T + \boldsymbol{X}_1 \boldsymbol{W}^T + \hdots + \boldsymbol{X}_C \boldsymbol{W}^T) \end{aligned}$$
+
+\indent Tương tự như CBOW model với single context word, $\boldsymbol{X}_1 \boldsymbol{W}^T$ đại diện cho vector của input context word $w_1$. Chúng ta đại diện $Z_{w_1}$ cho input context word $w_1$, cho nên:
+\begin{equation}\boldsymbol{H} = \dfrac{1}{C} (Z_{w_1} + Z_{w_2} + \hdots + Z_{w_C})\end{equation}
+
+\indent Ở đây, $C$ đại diện cho số lượng context word, để tính toán giá trị của $\boldsymbol{u}_j$ sẽ tương tự như cách ta tính toán cho single context word.
+\begin{equation}
+  \boldsymbol{u}_j = Z'_{w_j^T} \cdot \boldsymbol{H}
+\end{equation}
+
+\indent Ở đây, $Z'_{w_j^T}$ là vector đại diện cho từ thứ $j$ trong corpus.\\
+
+\indent Thế phương trình $(6)$ vào phương trình $(7)$, ta được:
+$$\boldsymbol{u}_j = Z'_{w_j^T} \cdot \dfrac{1}{C} (Z_{w_1} + Z_{w_2} + \hdots + Z_{w_C})$$
+
+\indent Tiếp theo, chúng ta sẽ tính toán cho loss function - nó tương tự như những gì chúng ta đã làm cho loss function ở single context word.
+$$\mathfrak{L} = -u_j + \log{\left ( \sum_{j'=1}^V \exp{(u'_j)} \right )}$$
+
+\indent Tiếp theo, là quá trình backward propagation. Cụ thể, quá trình cập nhật cho $\boldsymbol{W}$ sẽ như sau:
+$$\boldsymbol{W} = \boldsymbol{W} - \alpha \mathfrak{L} \boldsymbol{H}^T \cdot \dfrac{(\boldsymbol{X}_1 + \boldsymbol{X}_2 + \hdots + \boldsymbol{X}_C)}{C}$$
+
+\indent Đối với $\boldsymbol{W'}$ sẽ tương tự như single context word:
+$$\boldsymbol{W'} = \boldsymbol{W'} - \alpha \boldsymbol{e}_j \cdot \boldsymbol{H}$$
+
+\subsection{Skip-gram model}
+Skip-gram model về cơ bản như là việc làm ngược lại CBOW model. Với Skip-gram model, chúng ta sẽ cố gắng dự đoán các context word dựa vào target word được cung cấp ở đầu vào. Lấy lại ví dụ ban đầu của CBOW model, chúng ta sẽ dùng target word là \textsl{rises} để dự đoán các context word là \textsl{the}, \textsl{sun}, \textsl{in} và \textsl{east}.
+
+\includeImage{0.7}{04}{Target word và context word trong Skip-gram model.}
+
+\indent Dưới đây là kiến trúc của Skip-gram model:
+\includeImage{1}{09}{Kiến trúc của Skip-gram model 1.}
+
+\indent Trong Skip-gram model chúng ta sẽ cố gắng dự đoán các context word dựa vào target word. Ở đây ta chỉ có một target word và sẽ dự đoán ra $C$ context word. Sau quá trình đào tạo chúng ta sẽ lấy weight set giữa input layer và hidden layer $\boldsymbol{W}$ làm vector đại diện cho các từ. Bây giờ chúng ta sẽ tìm hiểu quá trình forward propagation và backward propagation.
+
+\subsubsection{Forward propagation}
+Hình dưới đây là kiến trúc của Skip-gram model, chúng ta có một target word làm đầu vào $\boldsymbol{X}$ và trả về $C$ context word $\boldsymbol{Y}$ ở đầu ra.
+\includeImage{1}{10}{Kiến trúc của Skip-gram model 2.}
+
+\indent Tương tự như CBOW model, trong quá trình forward propagation, trước tiên chúng ta nhân $\boldsymbol{X}$ cho hidden layer weight $\boldsymbol{W}$.
+$$\boldsymbol{H} = \boldsymbol{XW}^T$$
+
+\indent Tương tự như CBOW model, chúng ta có thể viết lại như sau:
+$$\boldsymbol{H} = Z_{w_I}$$
+
+\twiceIndent ở đây, $Z_{w_I}$ là vector đại diện cho input word $w_I$.\\
+
+\indent Tiếp theo, chúng ta cần tính $\boldsymbol{u}_j$, đây chính là điểm số dùng để đánh giá sự tương đồng giữa từ $j$ trong corpus và target word. Cũng giống với CBOW model, $\boldsymbol{u}_j$ được tính:
+$$\begin{aligned}\boldsymbol{u}_j &= \boldsymbol{W'}_{ij}^T \cdot \boldsymbol{H} \\ 
+  &= Z'_{w_j^T} \cdot \boldsymbol{H} \end{aligned}$$
+
+\twiceIndent với $Z'_{w_j^T}$ là vector đại diện cho từ $j$.\\
+
+\indent Nhưng không giống với CBOW model chúng ta chỉ cần dự đoán duy nhất một target word. Ở đây, chúng ta sẽ dự đoán tra $C$ context word. Nên để cho tường minh chúng ta có thể ghi lại phương trình trên thành:
+$$\boldsymbol{u}_{c,j} = Z'_{w_j^T} \cdot \boldsymbol{H} \text{ với } c = 1, 2, 3, \hdots,C$$
+
+\indent Vì $\boldsymbol{u}_{c,j}$ là điểm số đại diện cho từ thứ $j$ là context word $c$. Cho nên:
+\begin{itemize}
+  \itemsizePaddingLeft
+  \item $\boldsymbol{u}_{1,j}$ là điểm số cho từ thứ $j$ sẽ là context word đầu tiên.
+  \item $\boldsymbol{u}_{2,j}$ là điểm số cho từ thứ $j$ sẽ là context word thứ hai.
+  \item $\boldsymbol{u}_{c,j}$ là điểm số cho từ thứ $j$ sẽ là context word thứ $c$.
+\end{itemize}
+
+\vskip 0.5cm
+\indent Tiếp theo, chúng ta chuyển toàn bộ các điểm số trên thành xác suất bằng hàm softmax và đại diện bởi $\boldsymbol{y}_{c,j}$.
+
+\begin{equation}
+  \boldsymbol{y}_{c,j} = \dfrac{\exp{(\boldsymbol{u}_{c,j})}}{\sum_{j'=1}^V \exp{(\boldsymbol{u}_{j'})}}
+\end{equation}
+
+\indent Ở đây, $\boldsymbol{y}_{c,j}$ là xác suất cho từ thứ $j$ trong corpus sẽ là context word thứ $c$.\\
+
+\indent Bây giờ chúng ta sẽ tìm hiểu cách tính hàm loss function. Đặt $\boldsymbol{y}^*_{c,j}$ là xác suất để từ được chọn đúng là context word. Chúng ta cần tối đa hóa xác suất này.
+$$\max{\boldsymbol{y}^*_{c,j}}$$
+
+\indent Và cũng tương tự như CBOW model, thay vì tối đa hóa hàm trên, ta sẽ đi tối thiểu hóa hàm $log$ và lấy âm.
+$$\min{(-\log{(\boldsymbol{y}^*_{c,j})})}$$
+
+\indent Thế phương trình $(8)$ vào phương trình trên ta được:
+$$\mathfrak{L} = -\log{\dfrac{\exp{(\boldsymbol{u}_{c,j})}}{\sum_{j'=1}^V \exp{(\boldsymbol{u}_{j'})}}}$$
+
+\indent Và vì chúng ta có $C$ context word, nên chúng ta sẽ lấy tích các xác suất này với nhau.
+$$\begin{aligned} \mathfrak{L} &= -\log{\prod_{c=1}^{C} \dfrac{\exp{(\boldsymbol{u}_{c,j})}}{\sum_{j'=1}^V \exp{(\boldsymbol{u}_{j'})}}} \\ 
+&= -\sum^{C}_{c=1} \boldsymbol{u}_{c,j} + C \cdot \log{\sum^V_{j'=1}} \exp{(\boldsymbol{u}_{j'})} \end{aligned}$$
+
+\subsubsection{Backward propagation}
+Để tối thiểu hóa loss function, chúng ta áp dụng thuật toán gradient descent. Trong quá trình backward propagation trên network, chúng ta tính toán gradient cho loss function và cập nhật cho weight.\\
+
+\indent Trước tiên, chúng ta tính toán gradient cho $\boldsymbol{W'}$ bằng chain rule như sau:
+$$\dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{W'}_{ij}} = \sum^C_{c=1} \dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{u}_{c,j}} \cdot \dfrac{\partial \boldsymbol{u}_{c,j}}{\partial \boldsymbol{W'}_{ij}}$$
+
+\indent Tương tự như CBOW model, đạo hàm của $\dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{u}_{c,j}}$ chính là sự khác biệt giữa actual value và predicted value:
+$$\dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{u}_{j}} = \boldsymbol{e}_{c,j}$$
+
+\indent Tuy nhiên, do chúng ta có nhiều context word, nên chúng ta phải cộng tất cả các $\boldsymbol{e}_{c,j}$ này lại:
+$$\dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{u}_{j}} = \sum^C_{c=1} \boldsymbol{e}_{c,j} = E$$
+
+\indent Bây giờ, chúng ta sẽ tính đạo hàm cho $\dfrac{\partial \boldsymbol{u}_j}{\partial \boldsymbol{W'}_{ij}}$, và bởi vì chúng ta biết $\boldsymbol{u}_j = \boldsymbol{W'}_{ij}^T \cdot \boldsymbol{H}$, cho nên:
+
+$$\dfrac{\partial \boldsymbol{u}_j}{\partial \boldsymbol{W'}_{ij}} = \boldsymbol{H}$$
+
+\indent Cho nên, gradient của loss function đối với $\boldsymbol{W'}$ như sau:
+$$\dfrac{\partial \boldsymbol{u}_j}{\partial \boldsymbol{W'}_{ij}} = E \cdot \boldsymbol{H}$$
+
+\indent Bây giờ, chúng ta sẽ tính gradient của loss function đối với $\boldsymbol{W}$. Nó về cơ bản cũng tương tự như CBOW model.
+$$\dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{W}_{ki}} = \dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{h}_i} \cdot \dfrac{\partial \boldsymbol{h}_i}{\partial \boldsymbol{W}_{ki}}$$
+
+\indent Cho nên graident của loss function so với $\boldsymbol{W}$ và $\boldsymbol{W'}$ như sau:
+$$\boldsymbol{W'} = \boldsymbol{W'} - \alpha \boldsymbol{E} \cdot \boldsymbol{H}$$
+$$\boldsymbol{W} = \boldsymbol{W} - \alpha \boldsymbol{LH}^T \cdot \boldsymbol{X}$$
+
+\indent Kết thúc quá trình đào tạo, chúng ta sẽ tiến hành cập nhật cho các weight set trên network. Sau cùng $\boldsymbol{W}$ đạt trạng thái optimal weight và trở thành word vector cho vocabulary trong corpus.
+
+\section{Các chiến lược cải thiện hiệu suất}
+Để tiến hành cải thiện hiệu suất của quá trình đào tạo model, người ta sẽ sử dụng kèm theo một số kỹ thuật như:
+\begin{itemize}
+  \itemsizePaddingLeft
+  \item Sử dụng \textbf{Hierarchical softmax} thay vì softmax truyền thống.
+  \item \textbf{Negative sampling}.
+  \item \textbf{Subsampling frequent words}.
+\end{itemize}
+
+\subsection{Hierarchical softmax}
+Trong cả CBOW model và Skip-gram model ban đầu, chúng ta đều sử dụng hàm softmax để tính toán xác suất để một từ là đầu ra chính xác. Nhưng việc tính toán xác suất bằng hàm softmax rất tốn kém về mặt tài nguyên tính toán. Khi chúng ta đào tạo một CBOW model, chúng ta cần tính toán xác suất của vocabulary thứ $j$ để nó là một target word chính xác:
+$$\boldsymbol{y}_j = \dfrac{\exp{(u_j)}}{\sum^V_{j'=1} \exp{(u'_j)}}$$
+
+\indent Nhìn vào phương trình trên, cơ bản là chúng ta đang tính toán hàm mũ cho tất cả các từ $\boldsymbol{u'}_j$ trong corpus của chúng ta. Độ phức tạp của thuật toán lúc này là $O(V)$. Khi trong corpus của chúng ta có đến hàng triệu từ nó sẽ chắc chắn xảy ra tốn kém về mặt tính toán. Vì vậy, để khắc phục vấn đề này, thay vì tính toán hàm softmax một cách truyền thống người ta thực hiện tính toán softmax trên cây.\\
+
+\indent Hierarchical softmax sử dụng \textbf{Huffman binary search tree} \textit{(cây tìm kiếm nhị phân Huffman)} để giảm độ phức tạp về mặt tính toán xuống $O(\log_2(V))$. Lúc này kiến trúc mạng có sự thay đổi đáng kể ở output layer - chúng ta sẽ thay output layer bằng một \textbf{binary search tree}.
+
+\includeImage{0.99}{11}{Thay thế output layer bằng Hierarchical softmax trong CBOW model.}
+
+\indent Mỗi node lá bây giờ trong cây đại diện cho một từ trong corpus và tất cả các node trung gian đại diện cho \textbf{relative probability} \textit{xác suất tương đối} của tất cả các node con của chúng.\\
+
+\indent Như vậy, làm sao để chúng ta tính toán xác suất của một target word khi được cung cấp context word. Chúng ta chỉ cần duyệt cây và đưa ra quyết định nên duyệt cây bên trái hay bên phải tại một node nhất định. Như thể hiện trong hình dưới đây, chúng ta tính xác suất của từ $\textsl{flew}$ là target word dựa vào $c$ context word. Chúng ta lấy tích của tất cả các xác suất dọc theo con đường đến target word.
+\includeImage{0.8}{12}{Tính xác suất của target word trên Hierarchical softmax.}
+
+$$p(\textsl{flew}|c) = p_{n_0}(left|c) \times p_{n_1}(right|c) = 0.6 \times 0.8 = 0.12$$
+
+\subsection{Negative sampling}
+Xem xét câu: \textsl{"Birds are flying in the sky."} với target word là \textsl{flying} và còn lại là các context word. Chúng ta cần cập nhật lại các weight trong network mỗi khi nó dự đoán một target word không chính xác. Vì vậy, ngoại trừ từ \textsl{flying}, nếu một từ khác được dự đoán là target word thì chúng ta sẽ cập nhật network.\\
+
+\indent Hãy xem xét trường hợp chúng ta có hàng triệu vocabulary trong corpus. Trong trường hợp này, chúng ta cần phải thực hiện hàng triệu lần cập nhật weight cho đến khi đạt được optimal weight - lúc này nó tốn rất nhiều tài nguyên và chi phí.\\
+
+\indent Để khắc phục điều này, chúng ta sẽ đánh dấu correct target word là positive class và lấy mẫu một vài từ còn lại thuộc negative class. Về cơ bản, chúng ta đang chuyển về bài toán phân loại nhị phân. Lúc này, xác suất để một từ được chọn là negative word.
+$$p(w_i) = \dfrac{frequency(w_i)^{\frac{3}{4}}}{\sum^n_{j=0} frequency(w_j)^{\frac{3}{4}}}$$
+
+\subsection{Subsampling frequent words}
+Trong corpus, sẽ có một số từ xuất hiện rất thường xuyên chẳng hạn như \textsl{the}, \textsl{is},... và có một số từ lại xuất hiện không thường xuyên cho lắm. Để duy trì sự cân bằng giữa hai yếu tố, người ta sử dụng kỹ thuật \textbf{subsampling} \textit{(lấy mẫu con)}. Vậy nên, chúng ta sẽ loại bỏ một số từ xuất hiện thường xuyên hơn một \textbf{threshold} nhất định với xác suất $p$ được tính như sau:
+$$p(w_i) = 1 - \sqrt{\dfrac{t}{f(w_i)}}$$
+
+\twiceIndent ở đây $t$ là threshold và $f(w_i)$ là frequency của tử $i$.
 
 \end{document}
