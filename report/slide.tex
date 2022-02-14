@@ -1,0 +1,668 @@
+\documentclass[aspectratio=169]{beamer}
+\mode<presentation> {\usetheme{Madrid}}
+
+\definecolor{VIOLET}{rgb}{0.32549, 0.25098, 0.35294}
+\definecolor{DARK}{rgb}{0.0, 0.0, 0.0}
+\usecolortheme[named=VIOLET]{structure}
+
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage[vietnamese]{babel}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage[labelformat=empty]{caption}
+\usepackage{listings}
+\lstset{
+  basicstyle=\ttfamily,
+  columns=fullflexible,
+  frame=single,
+  breaklines=true,
+  postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space}}
+
+\newcommand{\includeImage}[3]{
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=#1\textwidth]{images/#2.png}
+    \def\temp{#3}\ifx\temp\empty\else\caption{#3}\fi
+\end{figure}}
+\newcommand{\itemsizePaddingLeft}{\setlength{\itemindent}{0.6cm}}
+\newcommand{\twiceIndent}{\hspace{\parindent}}        
+
+\title[Khoa học dữ liệu]{\textbf{Word2Vec}}
+\author{\textbf{20424008 - Dương Mạnh Cường}}
+\institute[] {
+    \medskip
+    \begin{figure}[h]
+        \centering\includegraphics[width=1.5cm]{images/logo_hcmus.png}
+    \end{figure}
+    \textit{Đại học Khoa Học Tự Nhiên\\ĐHQG Thành phố Hồ Chí Minh} % 
+}
+\date{\tiny{14/02/2022}} 
+
+
+\begin{document}
+
+% ==========================================================================Title part
+\begin{frame}
+    \titlepage
+\end{frame}
+
+
+% =================================================================== Table of content
+\begin{frame}
+    \frametitle{Nội dung}
+    \tableofcontents
+\end{frame}
+
+% ======================================================== Detail for table of content
+\section{Word2Vec model}
+\subsection{CBOW model}
+\subsubsection{CBOW model với một context word}
+\subsubsection{CBOW model với multiple context words}
+\subsection{Skip-gram model}
+\section{Các chiến lược cải thiện hiệu suất}
+\subsection{Hierarchical softmax}
+\subsection{Negative sampling}
+\subsection{Subsampling frequent words}
+\section{Chạy thử}
+\section{Tài nguyên tham khảo}
+\section{Hỏi đáp và kết thúc}
+
+
+% ============================================================================ Slide 3
+\begin{frame}
+    \frametitle{Word2Vec model (1)}
+    \begin{columns}
+        \column{0.5\linewidth}
+            \includeImage{0.9}{01}{\centering Hình 1: Các từ có ý nghĩa tương đồng nhau nằm gần nhau.}
+        \column{0.5\linewidth}
+        \begin{itemize}
+            \item Word2Vec là một phương pháp biến đổi dữ liệu dạng \textbf{text} sang \textbf{numeric}.
+            \item Các từ được đại diện bằng các \textbf{vector}.
+            \item Word2Vec model sử dụng \textbf{neural network} nên yêu cầu input data phải là numeric.
+            \item Khắc phục được nhược điểm của các phương pháp truyền thống như TF-IDF, Bag of Words vì chúng không hiểu được \textbf{syntactic} và \textbf{semantic} của từ.
+        \end{itemize}
+    \end{columns}
+\end{frame}
+
+% ---------------------------------------------------------------------------   SLIDE 2
+\begin{frame}
+    \frametitle{Word2Vec model (2)}
+    \begin{itemize}
+        \item Word2Vec là một phương pháp \textbf{word embedding} được sử dụng phổ biến.
+        \item Các \textbf{word vector} được tạo ra bởi Word2Vec model có khả năng nắm bắt được \textbf{semantic} và \textbf{syntactic} của từ.
+    \end{itemize}
+
+    \includeImage{0.87}{03}{Hình 2: Ví dụ về \textbf{semantic} và \textbf{syntactic}.}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Word2Vec model (3)}
+    \begin{itemize}
+        \item Word2Vec biểu diễn các word vector trong không gian $m$ chiều.
+        \item Ví dụ có câu: \textsl{"Archie used to live in New York, he then moved to Santa Clara. He loves apples and strawberries."}.
+    \end{itemize}
+
+    \includeImage{0.48}{02}{Hình 3: Các từ trong câu ví dụ được biểu diễn trong không gian vector.}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Word2Vec model (4)}
+    \begin{itemize}
+        \item Vì hiểu được semantic và syntactic của từ điều này giúp tận dụng các vector vào các bài toán như \textbf{text summarization} \textit{(tóm tắt văn bản)}, \textbf{sentiment analysis} \textit{(phân tích tình cảm)}, \textbf{text generation} \textit{(tạo văn bản)},...
+        \item Có hai cách để xây dựng Word2Vec model:
+    \end{itemize}
+
+    \begin{enumerate}
+        \itemsizePaddingLeft
+        \item \textbf{CBOW model}.
+        \item \textbf{Skip-gram model}.
+      \end{enumerate}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Word2Vec model (5)}
+    \framesubtitle{CBOW model}
+    \begin{itemize}
+            \item Giả sử có một neural network bao gồm: \textbf{một input layer}, \textbf{một hidden layer} và \textbf{một output layer}. Cần dự đoán ra \textbf{một từ} dựa vào \textbf{các từ xung quanh nó}. Từ được dự đoán được gọi là \textbf{target word} và các từ xung quanh nó được gọi là \textbf{context word}.
+            \item Đặt $n$ là số context word cần thiết để dự đoán target word. Xét $n = 2$ với câu: \\ \textsl{"The Sun rises in the east."}.
+    \end{itemize}
+
+    \includeImage{0.65}{04}{Hình 4: Target word và context word trong CBOW model.}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Word2Vec model (6)}
+    \framesubtitle{CBOW model}
+    \begin{itemize}
+            \item Input của network là các context word và output của network là target word.
+            \item Cần sử dụng kỹ thuật \textbf{one-hot encoding} để chuyển đổi các text data thành numeric data trước khi đưa vào network.
+    \end{itemize}
+
+    \includeImage{0.47}{05}{Hình 5: One-hot encoding cho text data.}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Word2Vec model (7)}
+    \framesubtitle{CBOW model}
+    \begin{itemize}
+            \item Kiến trúc của CBOW model. Các context word là: \textsl{the}, \textsl{sun}, \textsl{in} và \textsl{east} được dùng làm đầu vào cho network và target word là \textsl{rises} được dự đoán ở đầu ra.
+    \end{itemize}
+
+    \includeImage{0.52}{06}{Hình 6: Kiến trúc của CBOW model 1.}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Word2Vec model (8)}
+    \framesubtitle{CBOW model}
+    \begin{itemize}
+            \item Kết thúc quá trình đào tạo, lấy weight $\boldsymbol{W}$ ra làm các word vector cho các vocabulary.
+            \item Dưới đây là các vector tương ứng cho các từ của $\boldsymbol{W}$. Word embedding tương ứng cho từ \textsl{sun} là $\begin{bmatrix} 0.0 & 0.3 & 0.3 & 0.6 & 0.1 \\ \end{bmatrix}$.
+    \end{itemize}
+
+    $$\boldsymbol{W} = \text{ } \begin{matrix} the \\ sun \\ rises \\ in \\ east \end{matrix} \begin{bmatrix} 0.01 & 0.02 & 0.1 & 0.5 & 0.37 \\ 0.0 & 0.3 & 0.3 & 0.6 & 0.1 \\ 0.4 & 0.34 & 0.11 & 0.61 & 0.43 \\ 0.1 & 0.11 & 0.1 & 0.17 & 0.369 \\ 0.33 & 0.4 & 0.3 & 0.17 & 0.1 \\ \end{bmatrix}$$
+\end{frame}
+
+\begin{frame}
+    \frametitle{Word2Vec model (9)}
+    \framesubtitle{CBOW model - CBOW model với một context word}
+    \begin{itemize}
+            \item Xét trường hợp chỉ sử dụng duy nhất một context word, tức $C = 1$. Lúc này netword nhận vào một context word ở đầu vào và trả về một target word ở đầu ra.
+            \item Xét câu: \textsl{"The Sun rises in the east."}.
+            \item Đặt $V$ là số lượng vocabulary và $N$ là số neuron của hidden layer. Vì neural network của chúng ta có ba layer, cụ thể:
+    \end{itemize}
+
+    \begin{itemize}
+        \itemsizePaddingLeft
+        \item Input layer được đại diện bởi $\boldsymbol{X} = \{\boldsymbol{x}_1,\boldsymbol{x}_2,\boldsymbol{x}_3,...,\boldsymbol{x}_k,...,\boldsymbol{x}_V \}$. Khi chúng ta nói $\boldsymbol{x}_k$, tức ta đang đề cập đến từ thứ $k$ trong corpus của chúng ta.
+        \item Hidden layer được đại diện bởi $\boldsymbol{H} = \{\boldsymbol{h}_1,\boldsymbol{h}_2,\boldsymbol{h}_3,...,\boldsymbol{h}_i,...,\boldsymbol{h}_N \}$. Khi chúng ta nói $\boldsymbol{h}_i$, tức ta đang đề cập đến neuron thứ $i$ trong hidden layer.
+        \item Output layer được đại diện bởi $\boldsymbol{Y} = \{\boldsymbol{y}_1,\boldsymbol{y}_2,\boldsymbol{y}_3,...,\boldsymbol{y}_j,...,\boldsymbol{y}_V \}$. Khi chúng ta nói $\boldsymbol{y}_j$, tức ta đang đề cập đến từ thứ $j$ trong output layer.
+      \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Word2Vec model (10)}
+    \framesubtitle{CBOW model - CBOW model với một context word}
+    \begin{itemize}
+            \item Số chiều của $\boldsymbol{W}$ là $V \times N$, tức $\textit{số vocabulary} \times \textit{số neuron trong hidden layer}$. $W_{ki}$ đại diện cho một phần tử trong ma trận $\boldsymbol{W}$ giữa $\boldsymbol{x}_k$ trong input layer và $\boldsymbol{h}_i$ trong hidden layer.
+            \item Số chiều của $\boldsymbol{W'}$ là $N \times V$, tức $\textit{số neuron trong hidden layer} \times \textit{số vocabulary}$. $W'_{ij}$ đại diện cho một phần tử trong ma trận $\boldsymbol{W'}$ giữa $\boldsymbol{h}_i$ trong hidden layer và $\boldsymbol{y}_j$ trong output layer.
+    \end{itemize}
+
+    \includeImage{0.48}{07}{Hình 7: Kiến trúc của CBOW model 2.}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Word2Vec model (11)}
+    \framesubtitle{CBOW model - CBOW model với một context word}
+    \Large{\textbf{Forward propagation}}
+    \textnormal{
+    \begin{itemize}
+            \item \textbf{Bước 1}: $$\boldsymbol{H} = \boldsymbol{XW}^T = \boldsymbol{W}_{(k,.)}$$
+            \twiceIndent $\boldsymbol{W}_{(k,.)}$ là biểu diễn vector của input word. Đặt vector đại diện cho input word $w_I$ bằng $Z_{w_I}$. Lúc này phương trình trên có thể được viết thành.
+            \[ \boldsymbol{H} = Z_{w_I} \tag{1} \]
+    \end{itemize}}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Word2Vec model (12)}
+    \framesubtitle{CBOW model - CBOW model với một context word}
+    \Large{\textbf{Forward propagation}}
+    \textnormal{
+    \begin{itemize}
+            \item \textbf{Bước 2}: Đặt $\boldsymbol{u}_j$ là điểm số để từ thứ $j$ trong corpus là target word - được tính bằng cách nhân $\boldsymbol{H}$ cho $\boldsymbol{W'}$.
+                $$\boldsymbol{u}_j = \boldsymbol{W'}_{ij}^T \cdot \boldsymbol{H}$$
+            \item \textbf{Bước 3}: Cột $j$ của $\boldsymbol{W'}_{ij}$ đại diện cho vector của từ $j$ trong corpus. Đặt vector đại diện cho từ thứ $j$ là $Z'_{w_j^T}$
+            \[\boldsymbol{u}_j = Z'_{w_j^T} \cdot \boldsymbol{H} \tag{2}\]
+    \end{itemize}}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Word2Vec model (13)}
+    \framesubtitle{CBOW model - CBOW model với một context word}
+    \Large{\textbf{Forward propagation}}
+    \textnormal{
+    \begin{itemize}
+            \item \textbf{Bước 4}: Thế phương trình $(1)$ vào phương trình $(2)$, ta được:
+              $$\boldsymbol{u}_j = Z'_{w_j^T} \cdot Z_{w_I}$$
+            \item \textbf{Bước 5}: Áp dụng softmax activation để chuyển đổi $\boldsymbol{u}_j$ sang xác suất:
+              \[\boldsymbol{y}_j = \dfrac{\exp{(\boldsymbol{u}}_j)}{\sum_{j'=1}^V \exp{(\boldsymbol{u}'_j)}} \tag{3}\]
+    \end{itemize}}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Word2Vec model (14)}
+    \framesubtitle{CBOW model - CBOW model với một context word}
+    \Large{\textbf{Forward propagation}}
+    \textnormal{
+    \begin{itemize}
+            \item \textbf{Bước 6}: Đặt $\boldsymbol{y}_j^*$ là xác suất để từ $j$ chính xác là target word. Và vì chúng ta áp dụng gradient descent để tìm ra optimal weight nên thay vì tối đa hóa ta sẽ tìm tối thiểu hóa của $\log{(\boldsymbol{y}^*_j)}$
+              $$\min (-\log{(\boldsymbol{y}_j^*)})$$
+            \item \textbf{Bước 7}: Loss function của chúng ta lúc này thành:
+            \[\begin{aligned}
+                \mathfrak{L} &= -\log{(\boldsymbol{y}_j^*)} \\
+                &= - \log{\left ( \dfrac{\exp{(u_j)}}{\sum_{j'=1}^V \exp{(u'_j)}} \right )}
+            \end{aligned}\]
+    \end{itemize}}
+\end{frame}
+
+
+
+\begin{frame}
+    \frametitle{Word2Vec model (15)}
+    \framesubtitle{CBOW model - CBOW model với một context word}
+    \Large{\textbf{Forward propagation}} \textit{(tiếp theo)}
+    \textnormal{
+            \[\begin{aligned}
+                \mathfrak{L} &= - \left ( \log{(\exp{(u_j)})} - \log{\left ( \sum_{j'=1}^V \exp{(u'_j)} \right )} \right ) \\ 
+   &= -\log{(\exp{(u_j)})} + \log{\left ( \sum_{j'=1}^V \exp{(u'_j)} \right )} \\
+   &= -u_j + \log{\left ( \sum_{j'=1}^V \exp{(u'_j)} \right )}
+            \end{aligned}\]}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Word2Vec model (16)}
+    \framesubtitle{CBOW model - CBOW model với một context word}
+    \Large{\textbf{Backward propagation}}
+    \textnormal{
+    \begin{itemize}
+            \item \textbf{Bước 1}: Trong quá trình này, chúng ta sẽ cập nhật cho $\boldsymbol{W}$ và $\boldsymbol{W'}$ như sau: 
+            $$\boldsymbol{W} = \boldsymbol{W} - \alpha \dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{W}}$$ 
+            $$\boldsymbol{W'} = \boldsymbol{W'} - \alpha \dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{W'}}$$ 
+    \end{itemize}}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Word2Vec model (17)}
+    \framesubtitle{CBOW model - CBOW model với một context word}
+    \Large{\textbf{Backward propagation}}
+    \textnormal{
+    \begin{itemize}
+            \item \textbf{Bước 2}: Nhắc lại các công thức trong quá trình forward propagation: 
+            $$\boldsymbol{H} = \boldsymbol{XW}^T$$
+            $$\boldsymbol{u}_j = \boldsymbol{W'}_{ij}^T \cdot \boldsymbol{H}$$
+            $$\mathfrak{L} = -\boldsymbol{u}_j + \log{\left ( \sum_{j'=1}^V \exp{(\boldsymbol{u'}_j)} \right )}$$
+    \end{itemize}}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Word2Vec model (18)}
+    \framesubtitle{CBOW model - CBOW model với một context word}
+    \Large{\textbf{Backward propagation}}
+    \textnormal{
+    \begin{itemize}
+            \item \textbf{Bước 3}: Tính gradient của loss function đối với $\boldsymbol{W'}$ theo quy tắc \textbf{chain rule}.
+            $$\dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{W'}_{ij}} = \dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{u}_j} \cdot \dfrac{\partial \boldsymbol{u}_j}{\partial \boldsymbol{W'}_{ij}}$$
+            \twiceIndent Ta có đạo hàm của $\dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{u}_j}$ như sau: $\dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{u}_j} = \boldsymbol{e}_j \text{ \text{ (5)}}$\\
+            \twiceIndent với $\boldsymbol{e}_j$ là sự khác biệt giữa actual word và predicted word.
+    \end{itemize}}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Word2Vec model (19)}
+    \framesubtitle{CBOW model - CBOW model với một context word}
+    \Large{\textbf{Backward propagation}}
+    \textnormal{
+    \begin{itemize}
+            \item \textbf{Bước 4}: Tính đạo hàm cho $\dfrac{\partial \boldsymbol{u}_j}{\partial \boldsymbol{W'}_{ij}}$, và bởi vì chúng ta biết $\boldsymbol{u}_j = \boldsymbol{W'}_{ij}^T \cdot \boldsymbol{H}$ nên:
+            $$\dfrac{\partial \boldsymbol{u}_j}{\partial \boldsymbol{W'}_{ij}} = \boldsymbol{H}$$
+            \item \textbf{Bước 5}: Như vậy, gradient của loss function đối với $\boldsymbol{W'}$ bằng:
+            $$\dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{W'}_{ij}} = \boldsymbol{e}_j \cdot \boldsymbol{H}$$
+    \end{itemize}}
+\end{frame}
+
+
+\begin{frame}
+    \frametitle{Word2Vec model (20)}
+    \framesubtitle{CBOW model - CBOW model với một context word}
+    \Large{\textbf{Backward propagation}}
+    \textnormal{
+    \begin{itemize}
+            \item \textbf{Bước 6}: Tính gradient của loss function đối với $\boldsymbol{W}$ bằng quy tắc chain rule:
+            $$\dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{W}_{ki}} = \dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{h}_i} \cdot \dfrac{\partial \boldsymbol{h}_i}{\partial \boldsymbol{W}_{ki}}$$
+            \item  \textbf{Bước 7}: Tính đạo hàm của $\dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{h}_i}$, chúng ta áp dụng chain rule:
+            $$\dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{h}_i} = \sum_{j=1}^V \dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{u}_j} \cdot \dfrac{\partial \boldsymbol{u}_j}{\partial \boldsymbol{h}_i}$$
+    \end{itemize}}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Word2Vec model (21)}
+    \framesubtitle{CBOW model - CBOW model với một context word}
+    \Large{\textbf{Backward propagation}}
+    \textnormal{
+    \begin{itemize}
+            \item \textbf{Bước 8}: Thế phương trình $(5)$ vào phương trình trên, ta được:
+            $$\dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{h}_i} = \sum_{j=1}^V \boldsymbol{e}_j \cdot \dfrac{\partial \boldsymbol{u}_j}{\partial \boldsymbol{h}_i}$$
+            \item \textbf{Bước 9}: Vì $\boldsymbol{u}_j = \boldsymbol{W'}_{ij}^T \cdot \boldsymbol{H}$, tiếp tục thế vào phương trình trên được:
+            $$\dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{h}_i} = \sum_{j=1}^V \boldsymbol{e}_j \cdot \boldsymbol{W'}_{ij} = \mathfrak{L}\boldsymbol{H}^T$$
+        \end{itemize}}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Word2Vec model (22)}
+    \framesubtitle{CBOW model - CBOW model với một context word}
+    \Large{\textbf{Backward propagation}}
+    \textnormal{
+    \begin{itemize}
+            \item \textbf{Bước 10}: Tính đạo hàm cho $\dfrac{\partial \boldsymbol{h}_i}{\partial \boldsymbol{W}_{ki}}$. Biết $\boldsymbol{H} = \boldsymbol{XW}^T$ nên: 
+            $$\dfrac{\partial \boldsymbol{h}_i}{\partial \boldsymbol{W}_{ki}} = \boldsymbol{X}$$
+            \item \textbf{Bước 11}: Cuối cùng, gradient của loss function đối với $\boldsymbol{W}$ là:
+            $$\dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{W}_{ki}} = \boldsymbol{LH}^T \cdot \boldsymbol{X}$$
+        \end{itemize}}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Word2Vec model (23)}
+    \framesubtitle{CBOW model - CBOW model với một context word}
+    \Large{\textbf{Backward propagation}}
+    \textnormal{
+    \begin{itemize}
+            \item \textbf{Bước 12}: Như vậy, các set weight $\boldsymbol{W}$ và $\boldsymbol{W'}$ được cập nhật trong quá trình backward propagation như sau:
+            $$\boldsymbol{W} = \boldsymbol{W} - \alpha \boldsymbol{LH}^T \cdot \boldsymbol{X}$$
+            $$\boldsymbol{W'} = \boldsymbol{W'} - \alpha \boldsymbol{e}_j \cdot \boldsymbol{H}$$
+        \end{itemize}}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Word2Vec model (24)}
+    \framesubtitle{CBOW model - CBOW model với một context word}
+    \Large{\textbf{Mã nguồn}}
+    \includeImage{0.9}{13}{}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Word2Vec model (25)}
+    \framesubtitle{CBOW model - CBOW model với multiple context words}
+    \begin{itemize}
+        \item Dưới đây là kiến trúc của CBOW model với multiple context words:
+    \end{itemize}
+    \includeImage{0.39}{08}{Hình 8: Kiến trúc của CBOW model với multiple context words.}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Word2Vec model (26)}
+    \framesubtitle{CBOW model - CBOW model với multiple context words}
+    \begin{itemize}
+        \item Với multiple context words, chúng ta lấy giá trị trung bình của tất cả các context word đầu vào. Cụ thể với $C$ context word $\boldsymbol{X}_1, \boldsymbol{X}_2, \hdots, \boldsymbol{X}_C$, chúng ta thực hiện:
+        $$\begin{aligned}\boldsymbol{H} &= \dfrac{(\boldsymbol{X}_1 + \boldsymbol{X}_2 + \hdots + \boldsymbol{X}_C)}{C} \boldsymbol{W}^T \\ &= \dfrac{1}{C}(\boldsymbol{X}_1 \boldsymbol{W}^T + \boldsymbol{X}_1 \boldsymbol{W}^T + \hdots + \boldsymbol{X}_C \boldsymbol{W}^T) \end{aligned}$$
+        
+        \item Tương tự như CBOW model với single context word, $\boldsymbol{X}_1 \boldsymbol{W}^T$ đại diện cho vector của input context word $w_1$. Đại diện $Z_{w_1}$ cho input context word $w_1$, cho nên:
+        \[\boldsymbol{H} = \dfrac{1}{C} (Z_{w_1} + Z_{w_2} + \hdots + Z_{w_C}) \tag{6} \]
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Word2Vec model (27)}
+    \framesubtitle{CBOW model - CBOW model với multiple context words}
+    \begin{itemize}
+        \item Ở đây, $C$ đại diện cho số lượng context word, để tính toán giá trị của $\boldsymbol{u}_j$ sẽ tương tự như cách ta tính toán cho single context word.
+        \[\boldsymbol{u}_j = Z'_{w_j^T} \cdot \boldsymbol{H} \tag{7}\]
+        \twiceIndent với $Z'_{w_j^T}$ là vector đại diện cho từ thứ $j$ trong corpus.
+        \item Thế phương trình $(6)$ vào phương trình $(7)$, ta được:
+        $$\boldsymbol{u}_j = Z'_{w_j^T} \cdot \dfrac{1}{C} (Z_{w_1} + Z_{w_2} + \hdots + Z_{w_C})$$
+        \item Tính toán loss function:
+        $$\mathfrak{L} = -u_j + \log{\left ( \sum_{j'=1}^V \exp{(u'_j)} \right )}$$
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Word2Vec model (28)}
+    \framesubtitle{CBOW model - CBOW model với multiple context words}
+    \begin{itemize}
+        \item Tiếp theo, là quá trình backward propagation. Cụ thể, quá trình cập nhật cho $\boldsymbol{W}$ sẽ như sau:
+        $$\boldsymbol{W} = \boldsymbol{W} - \alpha \mathfrak{L} \boldsymbol{H}^T \cdot \dfrac{(\boldsymbol{X}_1 + \boldsymbol{X}_2 + \hdots + \boldsymbol{X}_C)}{C}$$
+        \item Đối với $\boldsymbol{W'}$ sẽ tương tự như single context word:
+        $$\boldsymbol{W'} = \boldsymbol{W'} - \alpha \boldsymbol{e}_j \cdot \boldsymbol{H}$$
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Word2Vec model (29)}
+    \framesubtitle{Skip-gram model}
+    \begin{itemize}
+        \item Skip-gram model về cơ bản như là việc làm ngược lại CBOW model. Với Skip-gram model, chúng ta sẽ cố gắng dự đoán các context word dựa vào target word được cung cấp ở đầu vào. Lấy lại ví dụ ban đầu của CBOW model, chúng ta sẽ dùng target word là \textsl{rises} để dự đoán các context word là \textsl{the}, \textsl{sun}, \textsl{in} và \textsl{east}.
+    \end{itemize}
+    \includeImage{0.73}{04}{Hình 9: Target word và context word trong Skip-gram model.}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Word2Vec model (30)}
+    \framesubtitle{Skip-gram model}
+    \begin{itemize}
+        \item Dưới đây là kiến trúc của Skip-gram model:
+    \end{itemize}
+    \includeImage{0.55}{09}{Hình 10: Kiến trúc của Skip-gram model 1.}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Word2Vec model (31)}
+    \framesubtitle{Skip-gram model}
+    \textnormal{
+    \begin{itemize}
+            \item Với một target word làm đầu vào $\boldsymbol{X}$ và trả về $C$ context word $\boldsymbol{Y}$ ở đầu ra.
+        \end{itemize}}
+
+\includeImage{0.332}{10}{Hình 11: Kiến trúc của Skip-gram model 2.}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Word2Vec model (32)}
+    \framesubtitle{Skip-gram model}
+    \Large{\textbf{Forward propagation}}
+    \textnormal{
+    \begin{itemize}
+            \item \textbf{Bước 1}: Trước tiên chúng ta nhân $\boldsymbol{X}$ cho hidden layer weight $\boldsymbol{W}$.
+            $$\boldsymbol{H} = \boldsymbol{XW}^T = Z_{w_I}$$
+            \twiceIndent ở đây, $Z_{w_I}$ là vector đại diện cho input word $w_I$.
+            \item \textbf{Bước 2}: Tính $\boldsymbol{u}_j$, đây chính là điểm số dùng để đánh giá sự tương đồng giữa từ $j$ trong corpus và target word.
+            $$\begin{aligned}\boldsymbol{u}_j &= \boldsymbol{W'}_{ij}^T \cdot \boldsymbol{H} \\ 
+                &= Z'_{w_j^T} \cdot \boldsymbol{H} \end{aligned}$$
+            \twiceIndent với $Z'_{w_j^T}$ là vector đại diện cho từ $j$.
+        \end{itemize}}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Word2Vec model (33)}
+    \framesubtitle{Skip-gram model}
+    \Large{\textbf{Forward propagation}}
+    \textnormal{
+    \begin{itemize}
+            \item \textbf{Bước 3}: Không giống với CBOW model chỉ cần dự đoán duy nhất một target word. Ở đây, dự đoán ra $C$ context word. Nên để cho tường minh chúng ta có thể ghi lại phương trình trên thành:
+            $$\boldsymbol{u}_{c,j} = Z'_{w_j^T} \cdot \boldsymbol{H} \text{ với } c = 1, 2, 3, \hdots,C$$
+            Vì $\boldsymbol{u}_{c,j}$ là điểm số đại diện cho từ thứ $j$ là context word $c$. Cho nên:
+            \begin{itemize}
+                \itemsizePaddingLeft
+                \item $\boldsymbol{u}_{1,j}$ là điểm số cho từ thứ $j$ sẽ là context word đầu tiên.
+                \item $\boldsymbol{u}_{2,j}$ là điểm số cho từ thứ $j$ sẽ là context word thứ hai.
+                \item $\boldsymbol{u}_{c,j}$ là điểm số cho từ thứ $j$ sẽ là context word thứ $c$.
+              \end{itemize}
+        \end{itemize}}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Word2Vec model (33)}
+    \framesubtitle{Skip-gram model}
+    \Large{\textbf{Forward propagation}}
+    \textnormal{
+    \begin{itemize}
+            \item \textbf{Bước 4}: Chuyển toàn bộ các điểm số trên thành xác suất bằng hàm softmax và đại diện bởi $\boldsymbol{y}_{c,j}$.
+            \[  \boldsymbol{y}_{c,j} = \dfrac{\exp{(\boldsymbol{u}_{c,j})}}{\sum_{j'=1}^V \exp{(\boldsymbol{u}_{j'})}} \tag{8}\]
+            \twiceIndent $\boldsymbol{y}_{c,j}$ là xác suất cho từ thứ $j$ trong corpus sẽ là context word thứ $c$.
+        \end{itemize}}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Word2Vec model (34)}
+    \framesubtitle{Skip-gram model}
+    \Large{\textbf{Forward propagation}}
+    \textnormal{
+    \begin{itemize}
+            \item \textbf{Bước 5}: Đặt $\boldsymbol{y}^*_{c,j}$ là xác suất để từ được chọn đúng là context word. Chúng ta cần tối thiểu hóa hàm $-\log$ xác suất này.
+            $$\min{(-\log{(\boldsymbol{y}^*_{c,j})})}$$
+            \item \textbf{Bước 6}: Thế phương trình $(8)$ vào phương trình trên ta được:
+            $$\mathfrak{L} = -\log{\dfrac{\exp{(\boldsymbol{u}_{c,j})}}{\sum_{j'=1}^V \exp{(\boldsymbol{u}_{j'})}}}$$
+        \end{itemize}}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Word2Vec model (35)}
+    \framesubtitle{Skip-gram model}
+    \Large{\textbf{Forward propagation}} - \textit{(tiếp theo)}
+
+    \twiceIndent \textnormal{Và vì chúng ta có $C$ context word, nên chúng ta sẽ lấy tích các xác suất này với nhau.}
+    $$\begin{aligned} \mathfrak{L} &= -\log{\prod_{c=1}^{C} \dfrac{\exp{(\boldsymbol{u}_{c,j})}}{\sum_{j'=1}^V \exp{(\boldsymbol{u}_{j'})}}} \\ 
+        &= -\sum^{C}_{c=1} \boldsymbol{u}_{c,j} + C \cdot \log{\sum^V_{j'=1}} \exp{(\boldsymbol{u}_{j'})} \end{aligned}$$
+\end{frame}
+
+\begin{frame}
+    \frametitle{Word2Vec model (36)}
+    \framesubtitle{Skip-gram model}
+    \Large{\textbf{Backward propagation}}
+    \textnormal{
+    \begin{itemize}
+            \item \textbf{Bước 1}: Áp dụng gradient descent, tính toán gradient cho loss function và cập nhật cho weight. Trước tiên, tính toán gradient cho $\boldsymbol{W'}$ bằng chain rule như sau:
+            $$\dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{W'}_{ij}} = \sum^C_{c=1} \dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{u}_{c,j}} \cdot \dfrac{\partial \boldsymbol{u}_{c,j}}{\partial \boldsymbol{W'}_{ij}}$$
+            \item \textbf{Bước 2}: Đạo hàm của $\dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{u}_{c,j}}$ là sự khác biệt giữa actual value và predicted value: $\dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{u}_{j}} = \boldsymbol{e}_{c,j}$
+        \end{itemize}}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Word2Vec model (37)}
+    \framesubtitle{Skip-gram model}
+    \Large{\textbf{Backward propagation}}
+    \textnormal{
+    \begin{itemize}
+            \item \textbf{Bước 3}: Do có nhiều context word, nên cộng tất cả các $\boldsymbol{e}_{c,j}$ này lại:
+            $$\dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{u}_{j}} = \sum^C_{c=1} \boldsymbol{e}_{c,j} = E$$
+            \item \textbf{Bước 4}: Tính đạo hàm cho $\dfrac{\partial \boldsymbol{u}_j}{\partial \boldsymbol{W'}_{ij}}$, và bởi vì chúng ta biết $\boldsymbol{u}_j = \boldsymbol{W'}_{ij}^T \cdot \boldsymbol{H}$, cho nên:
+            $$\dfrac{\partial \boldsymbol{u}_j}{\partial \boldsymbol{W'}_{ij}} = \boldsymbol{H}$$
+        \end{itemize}}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Word2Vec model (38)}
+    \framesubtitle{Skip-gram model}
+    \Large{\textbf{Backward propagation}}
+    \textnormal{
+    \begin{itemize}
+            \item \textbf{Bước 5}: Cho nên, gradient của loss function đối với $\boldsymbol{W'}$ như sau:
+            $$\dfrac{\partial \boldsymbol{u}_j}{\partial \boldsymbol{W'}_{ij}} = E \cdot \boldsymbol{H}$$
+            \item \textbf{Bước 6}: Tính gradient của loss function đối với $\boldsymbol{W}$.
+            $$\dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{W}_{ki}} = \dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{h}_i} \cdot \dfrac{\partial \boldsymbol{h}_i}{\partial \boldsymbol{W}_{ki}}$$
+        \end{itemize}}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Word2Vec model (39)}
+    \framesubtitle{Skip-gram model}
+    \Large{\textbf{Backward propagation}}
+    \textnormal{
+    \begin{itemize}
+            \item \textbf{Bước 7}: Lúc này, gradient của loss function so với $\boldsymbol{W}$ và $\boldsymbol{W'}$ như sau:
+            $$\boldsymbol{W'} = \boldsymbol{W'} - \alpha \boldsymbol{E} \cdot \boldsymbol{H}$$
+            $$\boldsymbol{W} = \boldsymbol{W} - \alpha \boldsymbol{LH}^T \cdot \boldsymbol{X}$$
+            \item \textbf{Bước 8}: Kết thúc quá trình đào tạo, chúng ta sẽ tiến hành cập nhật cho các weight set trên network. Sau cùng $\boldsymbol{W}$ đạt trạng thái optimal weight và trở thành word vector cho vocabulary trong corpus.
+        \end{itemize}}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Các chiến lược cải thiện hiệu suất (1)}
+    Để tiến hành cải thiện hiệu suất của quá trình đào tạo model, người ta sẽ sử dụng kèm theo một số kỹ thuật như:
+    \begin{itemize}
+      \itemsizePaddingLeft
+      \item Sử dụng \textbf{Hierarchical softmax} thay vì softmax truyền thống.
+      \item \textbf{Negative sampling}.
+      \item \textbf{Subsampling frequent words}.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Các chiến lược cải thiện hiệu suất (2)}
+    \framesubtitle{Hierarchical softmax}
+    \textnormal{
+    \begin{itemize}
+            \item Tính toán bằng softmax sẽ rất tốn kèm về mặt hiệu suất nên cần sử dụng một cách khác để tối ưu hóa hiệu năng tính toán đó là tính softmax trên cây - Hierarchical softmax:
+            $$\boldsymbol{y}_j = \dfrac{\exp{(u_j)}}{\sum^V_{j'=1} \exp{(u'_j)}}$$
+            \twiceIndent độ phức tạp $O(V)$.
+            \item Hierarchical softmax sử dụng \textbf{Huffman binary search tree} \textit{(cây tìm kiếm nhị phân Huffman)} để giảm độ phức tạp về mặt tính toán xuống $O(\log_2(V))$. Lúc này kiến trúc mạng có sự thay đổi đáng kể ở output layer - chúng ta sẽ thay output layer bằng một \textbf{binary search tree}.
+        \end{itemize}}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Các chiến lược cải thiện hiệu suất (3)}
+    \framesubtitle{Hierarchical softmax}
+        \begin{columns}
+            \column{0.5\linewidth}
+            \includeImage{0.95}{11}{\centering Hình 12: Thay thế output layer bằng Hierarchical softmax trong CBOW model.}
+            \column{0.5\linewidth}
+            \begin{itemize}
+                \item Đây là kiến trúc của Hierarchical softmax sau khi được nhúng vào output layer của network.
+                \item Mỗi node lá bây giờ trong cây đại diện cho một từ trong corpus và tất cả các node trung gian đại diện cho \textbf{relative probability} \textit{xác suất tương đối} của tất cả các node con của chúng.
+            \end{itemize}
+        \end{columns}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Các chiến lược cải thiện hiệu suất (4)}
+    \framesubtitle{Hierarchical softmax}
+        \begin{columns}
+            \column{0.5\linewidth}
+            \includeImage{1}{12}{\centering Hình 13: Thay thế output layer bằng Hierarchical softmax trong CBOW model.}
+            \column{0.5\linewidth}
+            \begin{itemize}
+                \item Để tính xác suất của một target word khi được cung cấp context word. Chỉ cần duyệt cây và đưa ra quyết định nên duyệt cây bên trái hay bên phải tại một node nhất định. Giả sử cần tính xác suất của từ $\textsl{flew}$ là target word dựa vào $c$ context word. Chúng ta lấy tích của tất cả các xác suất dọc theo con đường đến target word.
+                $$\begin{aligned}p(\textsl{flew}|c) &= p_{n_0}(left|c) \times p_{n_1}(right|c) \\ &= 0.6 \times 0.8 \\ &= 0.12\end{aligned}$$
+            \end{itemize}
+        \end{columns}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Các chiến lược cải thiện hiệu suất (5)}
+    \framesubtitle{Negative sampling}
+    \textnormal{
+        \begin{itemize}
+            \item Xét câu: \textsl{"Birds are flying in the sky."} với target word là \textsl{flying} và còn lại là các context word. Chúng ta cần cập nhật lại các weight trong network mỗi khi nó dự đoán một target word không chính xác. Vì vậy, ngoại trừ từ \textsl{flying}, nếu một từ khác được dự đoán là target word thì chúng ta sẽ cập nhật network.
+            \item Như vậy, với corpus chứa hàng triệu vocabulary sẽ rất hao tốn tài nguyên về mặt tính toán.
+            \item Để khắc phục điều này, đánh dấu correct target word là positive class và lấy mẫu một vài từ còn lại thuộc negative class. Về cơ bản, chúng ta đang chuyển về bài toán phân loại nhị phân. Lúc này, xác suất để một từ được chọn là negative word.
+            $$p(w_i) = \dfrac{frequency(w_i)^{\frac{3}{4}}}{\sum^n_{j=0} frequency(w_j)^{\frac{3}{4}}}$$
+        \end{itemize}
+    }
+\end{frame}
+
+\begin{frame}
+    \frametitle{Các chiến lược cải thiện hiệu suất (6)}
+    \framesubtitle{Subsampling frequent words}
+    \textnormal{
+        \begin{itemize}
+            \item Trong corpus, sẽ có một số từ xuất hiện rất thường xuyên chẳng hạn như \textsl{the}, \textsl{is},... và có một số từ lại xuất hiện không thường xuyên cho lắm. Để duy trì sự cân bằng giữa hai yếu tố, người ta sử dụng kỹ thuật \textbf{subsampling} \textit{(lấy mẫu con)}. Vậy nên, chúng ta sẽ loại bỏ một số từ xuất hiện thường xuyên hơn một \textbf{threshold} nhất định với xác suất $p$ được tính như sau:
+            $$p(w_i) = 1 - \sqrt{\dfrac{t}{f(w_i)}}$$
+            \twiceIndent ở đây $t$ là threshold và $f(w_i)$ là frequency của tử $i$.
+        \end{itemize}
+    }
+\end{frame}
+
+\begin{frame}
+    \frametitle{Chạy thử}
+    \includeImage{0.5}{demo}{}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Tài nguyên tham khảo}
+    \begin{itemize}
+        \item \textbf{\color{teal} Hands-On Deep Learning Algorithms with Python} - \textit{(chương 7)}, link sách tại \href{https://www.amazon.com/Hands-Deep-Learning-Algorithms-Python/dp/1789344158}{\color{blue} https://www.amazon.com/Hands-Deep-Learning-Algorithms-Python/dp/1789344158}.
+        \item \textbf{\color{teal} Natural Language Processing in Action}, link sách tại \href{https://www.amazon.com/Natural-Language-Processing-Action-Understanding/dp/1617294632}{\color{blue} https://www.amazon.com/Natural-Language-Processing-Action-Understanding/dp/1617294632}. 
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Hỏi đáp và kết thúc}
+    \includeImage{0.5}{ask_and_answer}{}
+\end{frame}
+
+\begin{frame}
+    \Huge{\centerline{HẾT}}
+    \Large{\centerline{Cảm ơn Thầy và các bạn đã chú ý lắng nghe.}}
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+
+\end{document}

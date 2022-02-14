@@ -11,3 +11,4 @@
 \contentsline {subsection}{\numberline {2.1}Hierarchical softmax}{17}{subsection.2.1}%
 \contentsline {subsection}{\numberline {2.2}Negative sampling}{18}{subsection.2.2}%
 \contentsline {subsection}{\numberline {2.3}Subsampling frequent words}{19}{subsection.2.3}%
+\contentsline {section}{\numberline {3}Tài nguyên tham khảo}{19}{section.3}%

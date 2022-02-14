@@ -429,7 +429,6 @@ $$\dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{W'}_{ij}} = \dfrac{\partial
 \twiceIndent với $\boldsymbol{e}_j$ là sự khác biệt giữa actual word và predicted word.
 
 \vskip 0.5cm
-$$\boldsymbol{u}_j = \boldsymbol{W'}_{ij}^T \cdot \boldsymbol{H}$$
 \indent Tiếp theo, chúng ta sẽ tính đạo hàm cho $\dfrac{\partial \boldsymbol{u}_j}{\partial \boldsymbol{W'}_{ij}}$, và bởi vì chúng ta biết $\boldsymbol{u}_j = \boldsymbol{W'}_{ij}^T \cdot \boldsymbol{H}$ nên:
 $$\dfrac{\partial \boldsymbol{u}_j}{\partial \boldsymbol{W'}_{ij}} = \boldsymbol{H}$$
 
@@ -440,10 +439,10 @@ $$\dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{W'}_{ij}} = \boldsymbol{e}_
 $$\dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{W}_{ki}} = \dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{h}_i} \cdot \dfrac{\partial \boldsymbol{h}_i}{\partial \boldsymbol{W}_{ki}}$$
 
 \indent Để tính đạo hàm của $\dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{h}_i}$, chúng ta áp dụng chain rule:
-$$\dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{h}_i} = \sum_{j=1}^V \dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{u}_j} \cdot \dfrac{\partial \boldsymbol{u}_j}{\boldsymbol{h}_i}$$
+$$\dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{h}_i} = \sum_{j=1}^V \dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{u}_j} \cdot \dfrac{\partial \boldsymbol{u}_j}{\partial \boldsymbol{h}_i}$$
 
 \indent Thế phương trình $(5)$ vào phương trình trên, ta được:
-$$\dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{h}_i} = \sum_{j=1}^V \boldsymbol{e}_j \cdot \dfrac{\partial \boldsymbol{u}_j}{\boldsymbol{h}_i}$$
+$$\dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{h}_i} = \sum_{j=1}^V \boldsymbol{e}_j \cdot \dfrac{\partial \boldsymbol{u}_j}{\partial \boldsymbol{h}_i}$$
 
 \indent Và vì chúng ta biết $\boldsymbol{u}_j = \boldsymbol{W'}_{ij}^T \cdot \boldsymbol{H}$, tiếp tục thế vào phương trình trên chúng ta được:
 $$\dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{h}_i} = \sum_{j=1}^V \boldsymbol{e}_j \cdot \boldsymbol{W'}_{ij} = \mathfrak{L}\boldsymbol{H}^T$$
@@ -595,7 +594,7 @@ $$\dfrac{\partial \boldsymbol{u}_j}{\partial \boldsymbol{W'}_{ij}} = E \cdot \bo
 \indent Bây giờ, chúng ta sẽ tính gradient của loss function đối với $\boldsymbol{W}$. Nó về cơ bản cũng tương tự như CBOW model.
 $$\dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{W}_{ki}} = \dfrac{\partial \mathfrak{L}}{\partial \boldsymbol{h}_i} \cdot \dfrac{\partial \boldsymbol{h}_i}{\partial \boldsymbol{W}_{ki}}$$
 
-\indent Cho nên graident của loss function so với $\boldsymbol{W}$ và $\boldsymbol{W'}$ như sau:
+\indent Cho nên gradient của loss function so với $\boldsymbol{W}$ và $\boldsymbol{W'}$ như sau:
 $$\boldsymbol{W'} = \boldsymbol{W'} - \alpha \boldsymbol{E} \cdot \boldsymbol{H}$$
 $$\boldsymbol{W} = \boldsymbol{W} - \alpha \boldsymbol{LH}^T \cdot \boldsymbol{X}$$
 
@@ -640,5 +639,10 @@ Trong corpus, sẽ có một số từ xuất hiện rất thường xuyên ch�
 $$p(w_i) = 1 - \sqrt{\dfrac{t}{f(w_i)}}$$
 
 \twiceIndent ở đây $t$ là threshold và $f(w_i)$ là frequency của tử $i$.
+\section{Tài nguyên tham khảo}
+\begin{itemize}
+  \item \textbf{\color{teal} Hands-On Deep Learning Algorithms with Python} - \textit{(chương 7)}, link sách tại \href{https://www.amazon.com/Hands-Deep-Learning-Algorithms-Python/dp/1789344158}{\color{blue} https://www.amazon.com/Hands-Deep-Learning-Algorithms-Python/dp/1789344158}.
+  \item \textbf{\color{teal} Natural Language Processing in Action}, link sách tại \href{https://www.amazon.com/Natural-Language-Processing-Action-Understanding/dp/1617294632}{\color{blue} https://www.amazon.com/Natural-Language-Processing-Action-Understanding/dp/1617294632}. 
+\end{itemize}
 
 \end{document}

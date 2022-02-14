@@ -1,0 +1,13 @@
+\babel@toc {vietnamese}{}
+\beamer@sectionintoc {1}{Word2Vec model}{3}{0}{1}
+\beamer@subsectionintoc {1}{1}{CBOW model}{3}{0}{1}
+\beamer@subsubsectionintoc {1}{1}{1}{CBOW model với một context word}{3}{0}{1}
+\beamer@subsubsectionintoc {1}{1}{2}{CBOW model với multiple context words}{3}{0}{1}
+\beamer@subsectionintoc {1}{2}{Skip-gram model}{3}{0}{1}
+\beamer@sectionintoc {2}{Các chiến lược cải thiện hiệu suất}{3}{0}{2}
+\beamer@subsectionintoc {2}{1}{Hierarchical softmax}{3}{0}{2}
+\beamer@subsectionintoc {2}{2}{Negative sampling}{3}{0}{2}
+\beamer@subsectionintoc {2}{3}{Subsampling frequent words}{3}{0}{2}
+\beamer@sectionintoc {3}{Chạy thử}{3}{0}{3}
+\beamer@sectionintoc {4}{Tài nguyên tham khảo}{3}{0}{4}
+\beamer@sectionintoc {5}{Hỏi đáp và kết thúc}{3}{0}{5}
