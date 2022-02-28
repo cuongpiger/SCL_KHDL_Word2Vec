@@ -5,10 +5,13 @@
 \contentsline {paragraph}{\numberline {1.1.1.2}Backward propagation}{9}{paragraph.1.1.1.2}%
 \contentsline {subsubsection}{\numberline {1.1.2}CBOW model với multiple context words}{11}{subsubsection.1.1.2}%
 \contentsline {subsection}{\numberline {1.2}Skip-gram model}{12}{subsection.1.2}%
-\contentsline {subsubsection}{\numberline {1.2.1}Forward propagation}{13}{subsubsection.1.2.1}%
+\contentsline {subsubsection}{\numberline {1.2.1}Forward propagation}{14}{subsubsection.1.2.1}%
 \contentsline {subsubsection}{\numberline {1.2.2}Backward propagation}{16}{subsubsection.1.2.2}%
-\contentsline {section}{\numberline {2}Các chiến lược cải thiện hiệu suất}{16}{section.2}%
+\contentsline {section}{\numberline {2}Các chiến lược cải thiện hiệu suất}{17}{section.2}%
 \contentsline {subsection}{\numberline {2.1}Hierarchical softmax}{17}{subsection.2.1}%
-\contentsline {subsection}{\numberline {2.2}Negative sampling}{18}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.2}Negative sampling}{19}{subsection.2.2}%
 \contentsline {subsection}{\numberline {2.3}Subsampling frequent words}{19}{subsection.2.3}%
-\contentsline {section}{\numberline {3}Tài nguyên tham khảo}{19}{section.3}%
+\contentsline {section}{\numberline {3}Mã nguồn}{20}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Xây dựng English Word2Vec model bằng Gensim}{20}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Xây dựng Word2Vec model sử dụng build-in model của Báo Mới}{26}{subsection.3.2}%
+\contentsline {section}{\numberline {4}Tài nguyên tham khảo}{30}{section.4}%

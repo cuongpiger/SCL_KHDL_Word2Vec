@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2021.11.10)  14 FEB 2022 12:06
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2021.11.10)  28 FEB 2022 23:39
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -833,7 +833,7 @@ LaTeX Font Info:    Trying to load font information for U+msb on input line 229.
  (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-<./images/logo_hcmus.png, id=87, 120.45pt x 94.6737pt>
+<./images/logo_hcmus.png, id=99, 120.45pt x 94.6737pt>
 File: ./images/logo_hcmus.png Graphic file (type png)
 <use ./images/logo_hcmus.png>
 Package pdftex.def Info: ./images/logo_hcmus.png  used on input line 238.
@@ -858,7 +858,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 258--259
 
  []
 
-<images/01.png, id=117, 315.1775pt x 269.005pt>
+<images/01.png, id=132, 315.1775pt x 269.005pt>
 File: images/01.png Graphic file (type png)
 <use images/01.png>
 Package pdftex.def Info: images/01.png  used on input line 262.
@@ -878,7 +878,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 269--270
 
  []
 
-<images/03.png, id=118, 680.5425pt x 258.9675pt>
+<images/03.png, id=133, 680.5425pt x 258.9675pt>
 File: images/03.png Graphic file (type png)
 <use images/03.png>
 Package pdftex.def Info: images/03.png  used on input line 271.
@@ -888,7 +888,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 273--274
 
  []
 
-<images/02.png, id=127, 1204.5pt x 801.99625pt>
+<images/02.png, id=142, 1204.5pt x 801.99625pt>
 File: images/02.png Graphic file (type png)
 <use images/02.png>
 Package pdftex.def Info: images/02.png  used on input line 277.
@@ -918,18 +918,18 @@ Underfull \hbox (badness 10000) in paragraph at lines 302--303
 
  []
 
-<images/04.png, id=135, 1184.425pt x 432.61626pt>
+<images/04.png, id=150, 1184.425pt x 432.61626pt>
 File: images/04.png Graphic file (type png)
 <use images/04.png>
 Package pdftex.def Info: images/04.png  used on input line 304.
 (pdftex.def)             Requested size: 350.33727pt x 127.95735pt.
-<images/05.png, id=136, 906.38625pt x 584.1825pt>
+<images/05.png, id=151, 906.38625pt x 584.1825pt>
 File: images/05.png Graphic file (type png)
 <use images/05.png>
 Package pdftex.def Info: images/05.png  used on input line 308.
 (pdftex.def)             Requested size: 300.29344pt x 193.5385pt.
 [4 </home/manhcuong/Temp/SCL_KHDL_Word2Vec/report/images/04.png>]
-<images/06.png, id=145, 1335.99126pt x 890.32625pt>
+<images/06.png, id=160, 1335.99126pt x 890.32625pt>
 File: images/06.png Graphic file (type png)
 <use images/06.png>
 Package pdftex.def Info: images/06.png  used on input line 312.
@@ -973,7 +973,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 338--339
  []
 
 [6]
-<images/07.png, id=165, 1159.33125pt x 655.44875pt>
+<images/07.png, id=180, 1159.33125pt x 655.44875pt>
 File: images/07.png Graphic file (type png)
 <use images/07.png>
 Package pdftex.def Info: images/07.png  used on input line 354.
@@ -1013,187 +1013,337 @@ LaTeX Font Info:    Trying to load font information for T5+cmtt on input line 46
  (/usr/share/texlive/texmf-dist/tex/latex/vntex/t5cmtt.fd
 File: t5cmtt.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
-LaTeX Font Info:    Trying to load font information for T3+cmtt on input line 474.
+LaTeX Font Info:    Trying to load font information for T3+cmtt on input line 475.
  (/usr/share/texmf/tex/latex/tipa/t3cmtt.fd
 File: t3cmtt.fd 2001/12/31 TIPA font definitions
-)
+) [10]
 
 Package hyperref Warning: Composite letter `\textacute+\ohorn'
 (hyperref)                not defined in PD1 encoding,
-(hyperref)                removing `\textacute' on input line 484.
+(hyperref)                removing `\textacute' on input line 485.
 
 
 Package hyperref Warning: Glyph not defined in PD1 encoding,
-(hyperref)                removing `\ohorn' on input line 484.
+(hyperref)                removing `\ohorn' on input line 485.
 
-<images/08.png, id=189, 977.6525pt x 894.34125pt>
+<images/08.png, id=226, 977.6525pt x 894.34125pt>
 File: images/08.png Graphic file (type png)
 <use images/08.png>
-Package pdftex.def Info: images/08.png  used on input line 487.
+Package pdftex.def Info: images/08.png  used on input line 488.
 (pdftex.def)             Requested size: 500.484pt x 457.84111pt.
-[10] [11 </home/manhcuong/Temp/SCL_KHDL_Word2Vec/report/images/08.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 500--501
+[11 </home/manhcuong/Temp/SCL_KHDL_Word2Vec/report/images/08.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 501--502
 
  []
 
 File: images/04.png Graphic file (type png)
 <use images/04.png>
-Package pdftex.def Info: images/04.png  used on input line 517.
+Package pdftex.def Info: images/04.png  used on input line 518.
 (pdftex.def)             Requested size: 350.33727pt x 127.95735pt.
-<images/09.png, id=221, 1241.63875pt x 846.16125pt>
+[12]
+<images/09.png, id=245, 1241.63875pt x 846.16125pt>
 File: images/09.png Graphic file (type png)
 <use images/09.png>
-Package pdftex.def Info: images/09.png  used on input line 520.
+Package pdftex.def Info: images/09.png  used on input line 521.
 (pdftex.def)             Requested size: 500.484pt x 341.0666pt.
-[12]
-<images/10.png, id=231, 859.21pt x 889.3225pt>
+<images/10.png, id=246, 859.21pt x 889.3225pt>
 File: images/10.png Graphic file (type png)
 <use images/10.png>
-Package pdftex.def Info: images/10.png  used on input line 526.
+Package pdftex.def Info: images/10.png  used on input line 527.
 (pdftex.def)             Requested size: 500.484pt x 518.03287pt.
- [13 </home/manhcuong/Temp/SCL_KHDL_Word2Vec/report/images/09.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 534--535
-
- []
-
-[14 </home/manhcuong/Temp/SCL_KHDL_Word2Vec/report/images/10.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 540--541
+ [13 </home/manhcuong/Temp/SCL_KHDL_Word2Vec/report/images/09.png>] [14 </home/manhcuong/Temp/SCL_KHDL_Word2Vec/report/images/10.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 535--536
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 560--561
+Underfull \hbox (badness 10000) in paragraph at lines 541--542
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 576--577
+Underfull \hbox (badness 10000) in paragraph at lines 561--562
 
  []
 
 [15]
+Underfull \hbox (badness 10000) in paragraph at lines 577--578
+
+ []
+
 
 Package hyperref Warning: Composite letter `\textacute+\ecircumflex'
 (hyperref)                not defined in PD1 encoding,
-(hyperref)                removing `\textacute' on input line 603.
+(hyperref)                removing `\textacute' on input line 604.
 
 
 Package hyperref Warning: Glyph not defined in PD1 encoding,
-(hyperref)                removing `\ecircumflex' on input line 603.
+(hyperref)                removing `\ecircumflex' on input line 604.
 
 
 Package hyperref Warning: Glyph not defined in PD1 encoding,
-(hyperref)                removing `\uhorn' on input line 603.
+(hyperref)                removing `\uhorn' on input line 604.
 
 
 Package hyperref Warning: Composite letter `\textdotbelow+\ohorn'
 (hyperref)                not defined in PD1 encoding,
-(hyperref)                removing `\textdotbelow' on input line 603.
+(hyperref)                removing `\textdotbelow' on input line 604.
 
 
 Package hyperref Warning: Glyph not defined in PD1 encoding,
-(hyperref)                removing `\ohorn' on input line 603.
+(hyperref)                removing `\ohorn' on input line 604.
 
 
 Package hyperref Warning: Glyph not defined in PD1 encoding,
-(hyperref)                removing `\h' on input line 603.
+(hyperref)                removing `\h' on input line 604.
 
 
 Package hyperref Warning: Composite letter `\textdotbelow+\ecircumflex'
 (hyperref)                not defined in PD1 encoding,
-(hyperref)                removing `\textdotbelow' on input line 603.
+(hyperref)                removing `\textdotbelow' on input line 604.
 
 
 Package hyperref Warning: Glyph not defined in PD1 encoding,
-(hyperref)                removing `\ecircumflex' on input line 603.
+(hyperref)                removing `\ecircumflex' on input line 604.
 
 
 Package hyperref Warning: Composite letter `\textdotbelow+\ecircumflex'
 (hyperref)                not defined in PD1 encoding,
-(hyperref)                removing `\textdotbelow' on input line 603.
+(hyperref)                removing `\textdotbelow' on input line 604.
 
 
 Package hyperref Warning: Glyph not defined in PD1 encoding,
-(hyperref)                removing `\ecircumflex' on input line 603.
+(hyperref)                removing `\ecircumflex' on input line 604.
 
 
 Package hyperref Warning: Composite letter `\textacute+\acircumflex'
 (hyperref)                not defined in PD1 encoding,
-(hyperref)                removing `\textacute' on input line 603.
+(hyperref)                removing `\textacute' on input line 604.
 
 
 Package hyperref Warning: Glyph not defined in PD1 encoding,
-(hyperref)                removing `\acircumflex' on input line 603.
+(hyperref)                removing `\acircumflex' on input line 604.
 
 [16]
-Underfull \hbox (badness 10000) in paragraph at lines 616--617
+Underfull \hbox (badness 10000) in paragraph at lines 617--618
 
  []
 
-<images/11.png, id=251, 1126.2075pt x 887.315pt>
+<images/11.png, id=267, 1126.2075pt x 887.315pt>
 File: images/11.png Graphic file (type png)
 <use images/11.png>
-Package pdftex.def Info: images/11.png  used on input line 620.
+Package pdftex.def Info: images/11.png  used on input line 621.
 (pdftex.def)             Requested size: 495.48189pt x 390.37918pt.
-
-Underfull \hbox (badness 10000) in paragraph at lines 622--623
+[17]
+Underfull \hbox (badness 10000) in paragraph at lines 623--624
 
  []
 
-[17 </home/manhcuong/Temp/SCL_KHDL_Word2Vec/report/images/11.png>]
-<images/12.png, id=257, 1078.0275pt x 783.92876pt>
+<images/12.png, id=272, 1078.0275pt x 783.92876pt>
 File: images/12.png Graphic file (type png)
 <use images/12.png>
-Package pdftex.def Info: images/12.png  used on input line 625.
+Package pdftex.def Info: images/12.png  used on input line 626.
 (pdftex.def)             Requested size: 400.38872pt x 291.16154pt.
-
-Underfull \hbox (badness 10000) in paragraph at lines 630--631
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 632--633
+[18 </home/manhcuong/Temp/SCL_KHDL_Word2Vec/report/images/11.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 631--632
 
  []
 
-[18 </home/manhcuong/Temp/SCL_KHDL_Word2Vec/report/images/12.png>]
+
+Underfull \hbox (badness 10000) in paragraph at lines 633--634
+
+ []
+
+[19 </home/manhcuong/Temp/SCL_KHDL_Word2Vec/report/images/12.png>]
+
+Package hyperref Warning: Composite letter `\textasciigrave+\ocircumflex'
+(hyperref)                not defined in PD1 encoding,
+(hyperref)                removing `\textasciigrave' on input line 644.
+
 
 Package hyperref Warning: Glyph not defined in PD1 encoding,
-(hyperref)                removing `\h' on input line 642.
+(hyperref)                removing `\ocircumflex' on input line 644.
 
 
-Overfull \hbox (128.73979pt too wide) in paragraph at lines 644--645
+Package hyperref Warning: Composite letter `\textdotbelow+\uhorn'
+(hyperref)                not defined in PD1 encoding,
+(hyperref)                removing `\textdotbelow' on input line 645.
+
+
+Package hyperref Warning: Glyph not defined in PD1 encoding,
+(hyperref)                removing `\uhorn' on input line 645.
+
+
+Package hyperref Warning: Composite letter `\textasciigrave+\abreve'
+(hyperref)                not defined in PD1 encoding,
+(hyperref)                removing `\textasciigrave' on input line 645.
+
+
+Package hyperref Warning: Glyph not defined in PD1 encoding,
+(hyperref)                removing `\abreve' on input line 645.
+
+(/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang1.sty
+File: lstlang1.sty 2019/09/10 1.8c listings language file
+) (/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang1.sty
+File: lstlang1.sty 2019/09/10 1.8c listings language file
+)
+<images/14.png, id=284, 748.7975pt x 158.5925pt>
+File: images/14.png Graphic file (type png)
+<use images/14.png>
+Package pdftex.def Info: images/14.png  used on input line 681.
+(pdftex.def)             Requested size: 500.484pt x 106.0023pt.
+ [20 </home/manhcuong/Temp/SCL_KHDL_Word2Vec/report/images/14.png>]
+<images/15.png, id=313, 748.7975pt x 89.33376pt>
+File: images/15.png Graphic file (type png)
+<use images/15.png>
+Package pdftex.def Info: images/15.png  used on input line 711.
+(pdftex.def)             Requested size: 500.484pt x 59.71016pt.
+<images/16.png, id=314, 748.7975pt x 137.51375pt>
+File: images/16.png Graphic file (type png)
+<use images/16.png>
+Package pdftex.def Info: images/16.png  used on input line 724.
+(pdftex.def)             Requested size: 500.484pt x 91.9134pt.
+<images/17.png, id=315, 758.835pt x 119.44624pt>
+File: images/17.png Graphic file (type png)
+<use images/17.png>
+Package pdftex.def Info: images/17.png  used on input line 731.
+(pdftex.def)             Requested size: 500.484pt x 78.78189pt.
+ [21 </home/manhcuong/Temp/SCL_KHDL_Word2Vec/report/images/15.png> </home/manhcuong/Temp/SCL_KHDL_Word2Vec/report/images/16.png>]
+<images/18.png, id=348, 763.85374pt x 49.18375pt>
+File: images/18.png Graphic file (type png)
+<use images/18.png>
+Package pdftex.def Info: images/18.png  used on input line 747.
+(pdftex.def)             Requested size: 500.484pt x 32.22571pt.
+<images/19.png, id=349, 752.8125pt x 62.2325pt>
+File: images/19.png Graphic file (type png)
+<use images/19.png>
+Package pdftex.def Info: images/19.png  used on input line 762.
+(pdftex.def)             Requested size: 500.484pt x 41.37459pt.
+ [22 </home/manhcuong/Temp/SCL_KHDL_Word2Vec/report/images/17.png> </home/manhcuong/Temp/SCL_KHDL_Word2Vec/report/images/18.png> </home/manhcuong/Temp/SCL_KHDL_Word2Vec/report/images/19.png>]
+<images/20.png, id=376, 749.80125pt x 33.12375pt>
+File: images/20.png Graphic file (type png)
+<use images/20.png>
+Package pdftex.def Info: images/20.png  used on input line 779.
+(pdftex.def)             Requested size: 500.484pt x 22.1099pt.
+<images/21.png, id=377, 754.82pt x 229.85875pt>
+File: images/21.png Graphic file (type png)
+<use images/21.png>
+Package pdftex.def Info: images/21.png  used on input line 816.
+(pdftex.def)             Requested size: 500.484pt x 152.40869pt.
+ [23 </home/manhcuong/Temp/SCL_KHDL_Word2Vec/report/images/20.png>]
+<images/22.png, id=405, 764.8575pt x 29.10875pt>
+File: images/22.png Graphic file (type png)
+<use images/22.png>
+Package pdftex.def Info: images/22.png  used on input line 824.
+(pdftex.def)             Requested size: 500.484pt x 19.04749pt.
+<images/23.png, id=406, 762.85pt x 29.10875pt>
+File: images/23.png Graphic file (type png)
+<use images/23.png>
+Package pdftex.def Info: images/23.png  used on input line 832.
+(pdftex.def)             Requested size: 500.484pt x 19.09723pt.
+ [24 </home/manhcuong/Temp/SCL_KHDL_Word2Vec/report/images/21.png> </home/manhcuong/Temp/SCL_KHDL_Word2Vec/report/images/22.png> </home/manhcuong/Temp/SCL_KHDL_Word2Vec/report/images/23.png>]
+<images/24.png, id=436, 1396.21625pt x 1005.7575pt>
+File: images/24.png Graphic file (type png)
+<use images/24.png>
+Package pdftex.def Info: images/24.png  used on input line 925.
+(pdftex.def)             Requested size: 500.484pt x 360.52242pt.
+ [25]
+
+Package hyperref Warning: Composite letter `\textdotbelow+\uhorn'
+(hyperref)                not defined in PD1 encoding,
+(hyperref)                removing `\textdotbelow' on input line 937.
+
+
+Package hyperref Warning: Glyph not defined in PD1 encoding,
+(hyperref)                removing `\uhorn' on input line 937.
+
+
+Package hyperref Warning: Glyph not defined in PD1 encoding,
+(hyperref)                removing `\h' on input line 937.
+
+
+Package hyperref Warning: Glyph not defined in PD1 encoding,
+(hyperref)                removing `\uhorn' on input line 937.
+
+
+Package hyperref Warning: Composite letter `\textdotbelow+u'
+(hyperref)                not defined in PD1 encoding,
+(hyperref)                removing `\textdotbelow' on input line 937.
+
+
+Package hyperref Warning: Glyph not defined in PD1 encoding,
+(hyperref)                removing `\h' on input line 937.
+
+
+Package hyperref Warning: Composite letter `\textacute+\ohorn'
+(hyperref)                not defined in PD1 encoding,
+(hyperref)                removing `\textacute' on input line 937.
+
+
+Package hyperref Warning: Glyph not defined in PD1 encoding,
+(hyperref)                removing `\ohorn' on input line 937.
+
+[26 </home/manhcuong/Temp/SCL_KHDL_Word2Vec/report/images/24.png>]
+<images/25.png, id=489, 872.25874pt x 231.86626pt>
+File: images/25.png Graphic file (type png)
+<use images/25.png>
+Package pdftex.def Info: images/25.png  used on input line 966.
+(pdftex.def)             Requested size: 500.484pt x 133.03902pt.
+<images/26.png, id=490, 870.25125pt x 231.86626pt>
+File: images/26.png Graphic file (type png)
+<use images/26.png>
+Package pdftex.def Info: images/26.png  used on input line 975.
+(pdftex.def)             Requested size: 500.484pt x 133.35036pt.
+ [27 </home/manhcuong/Temp/SCL_KHDL_Word2Vec/report/images/25.png> </home/manhcuong/Temp/SCL_KHDL_Word2Vec/report/images/26.png>]
+<images/27.png, id=511, 883.3pt x 37.13875pt>
+File: images/27.png Graphic file (type png)
+<use images/27.png>
+Package pdftex.def Info: images/27.png  used on input line 983.
+(pdftex.def)             Requested size: 500.484pt x 21.04292pt.
+ [28 </home/manhcuong/Temp/SCL_KHDL_Word2Vec/report/images/27.png>]
+<images/28.png, id=551, 1532.72626pt x 1004.75375pt>
+File: images/28.png Graphic file (type png)
+<use images/28.png>
+Package pdftex.def Info: images/28.png  used on input line 1077.
+(pdftex.def)             Requested size: 500.484pt x 328.07423pt.
+ [29]
+
+Package hyperref Warning: Glyph not defined in PD1 encoding,
+(hyperref)                removing `\h' on input line 1087.
+
+
+Overfull \hbox (128.73979pt too wide) in paragraph at lines 1089--1090
 [][]\T5/cmr/bx/n/12 Hands-On Deep Learn-ing Al-go-rithms with Python[] \T5/cmr/m/n/12 - \T5/cmr/m/it/12 (ch÷ìng 7)\T5/cmr/m/n/12 , link s¡ch t¤i [][][]https://www.amazon.com/Hands-
  []
 
 
-Overfull \hbox (6.80014pt too wide) in paragraph at lines 645--646
+Overfull \hbox (6.80014pt too wide) in paragraph at lines 1090--1091
 [][]\T5/cmr/bx/n/12 Natural Lan-guage Pro-cess-ing in Ac-tion[]\T5/cmr/m/n/12 , link s¡ch t¤i [][][]https://www.amazon.com/Natural-
  []
 
-[19]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 648.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 648.
+[30 </home/manhcuong/Temp/SCL_KHDL_Word2Vec/report/images/28.png>]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1093.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1093.
  (/home/manhcuong/Temp/SCL_KHDL_Word2Vec/report/main.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 648.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 648.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1093.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1093.
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: AC7153CC6EFF317BAD6F93BC4D116F6C;1017.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 648.
+(rerunfilecheck)             Checksum: 89F5ADFA1A46B86FE7C976CB92DE7AD2;1268.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1093.
  ) 
 Here is how much of TeX's memory you used:
- 24133 strings out of 481239
- 443120 string characters out of 5920376
- 947689 words of memory out of 5000000
- 38821 multiletter control sequences out of 15000+600000
+ 24683 strings out of 481239
+ 450718 string characters out of 5920376
+ 996064 words of memory out of 5000000
+ 39105 multiletter control sequences out of 15000+600000
  566343 words of font info for 93 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 68i,15n,83p,990b,1738s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-ts1.enc}</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmbsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmib10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/euler/eufm10.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1200.pfb></usr/share/texmf/fonts/type1/fkr/tipa/tipatt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnbxti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vncsc10.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnsl12.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnti12.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vntt10.pfb>
-Output written on /home/manhcuong/Temp/SCL_KHDL_Word2Vec/report/main.pdf (20 pages, 770377 bytes).
+ 68i,15n,93p,990b,2096s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-ts1.enc}</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmbsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmib10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/euler/eufm10.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1200.pfb></usr/share/texmf/fonts/type1/fkr/tipa/tipatt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnbxti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vncsc10.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnsl12.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnss12.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnti12.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vntt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vntt12.pfb>
+Output written on /home/manhcuong/Temp/SCL_KHDL_Word2Vec/report/main.pdf (31 pages, 1721073 bytes).
 PDF statistics:
- 366 PDF objects out of 1000 (max. 8388607)
- 288 compressed objects within 3 object streams
- 79 named destinations out of 1000 (max. 500000)
- 286 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 742 PDF objects out of 1000 (max. 8388607)
+ 631 compressed objects within 7 object streams
+ 327 named destinations out of 1000 (max. 500000)
+ 385 words of extra memory for PDF output out of 10000 (max. 10000000)
 

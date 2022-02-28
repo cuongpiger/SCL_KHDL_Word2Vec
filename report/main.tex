@@ -467,7 +467,8 @@ def single_context_CBOW(x, label, W1, W2, loss):
   u = np.dot(W2.T, h)
   y_pred = softmax(u)
 
-  # error giữa actual value và predicted value
+  # error giữa actual value và predicted value + tính backward propagation
+  e = label - y_pred
   dW2 = np.outer(h, e)
   dW1 = np.outer(x, np.dot(W2.T, e))
 
@@ -639,6 +640,450 @@ Trong corpus, sẽ có một số từ xuất hiện rất thường xuyên ch�
 $$p(w_i) = 1 - \sqrt{\dfrac{t}{f(w_i)}}$$
 
 \twiceIndent ở đây $t$ là threshold và $f(w_i)$ là frequency của tử $i$.
+
+\section{Mã nguồn}
+\subsection{Xây dựng English Word2Vec model bằng Gensim}
+Ở đây, em sử dụng Gensim package để xây dựng Word2Vec model với data là file \textsf{data/text.csv}. Gensim là một package được sử dụng rộng rãi để xây dựng các Word2Vec model. Trước tiên cần cài đặt Gensim package.
+\begin{lstlisting}[language=bash]
+# bash
+pip install gensim
+\end{lstlisting}
+
+\vskip 0.5cm
+\indent Import các thư viện cần thiết.
+\begin{lstlisting}[language=python]
+import warnings
+warnings.filterwarnings('ignore')
+
+# data processing
+import pandas as pd
+import re
+from nltk.corpus import stopwords
+stopWords = stopwords.words('english')
+
+# modelling
+from gensim.models import Word2Vec
+from gensim.models import Phrases
+from gensim.models.phrases import Phraser
+\end{lstlisting}
+
+\vskip 0.5cm
+\indent Đọc dữ liệu được lưu trong file \textsf{data/text.csv}, có kích thước khoảng 23 MB.
+\begin{lstlisting}[language=python]
+data = pd.read_csv('data/text.csv', header=None)
+\end{lstlisting}
+
+\vskip 0.5cm
+\indent Xem qua vài quan sát trong dữ liệu.
+\begin{lstlisting}[language=python]
+data.head()
+\end{lstlisting}
+\includeImage{1}{14}{}
+
+\vskip 0.5cm
+\indent Định nghĩa hàm dùng để tiền xử lí dữ liệu.
+\begin{lstlisting}[language=python]
+def pre_process(text):    
+  '''
+  Lowercase text '''
+  text = str(text).lower()
+  
+  ''' 
+  Remove các kí tự đặc biệt, số, khoảng trắng thừa '''
+  text = re.sub(r'[^A-Za-z0-9\s.]', r'', text)
+  
+  '''
+  Remove new line characters '''
+  text = re.sub(r'\n',r' ',text)
+  
+  '''
+  Remove stopwords '''
+  text = " ".join([word for word in text.split() if word not in stopWords])
+  
+  return text
+\end{lstlisting}
+
+\vskip 0.5cm
+\indent Thử áp dụng hàm \texttt{pre\_process()} lên một mẫu dữ liệu.
+\begin{lstlisting}[language=python]
+pre_process(data[0][50])
+\end{lstlisting}
+\includeImage{1}{15}{}
+
+\vskip 0.5cm
+\indent Pre-processing trên toàn bộ data.\
+\begin{lstlisting}[language=python]
+data[0] = data[0].map(lambda x: pre_process(x))
+\end{lstlisting}
+
+\vskip 0.5cm
+\indent Xem lại dữ liệu sau khi pre-processing.
+\begin{lstlisting}[language=python]
+data[0].head()
+\end{lstlisting}
+\includeImage{1}{16}{}
+
+\vskip 0.5cm
+\indent Gensim yêu cầu input có dạng list of lists. Mỗi quan sát trong dữ liệu là một set of sentences. Cho nên ta cần tách các sentence bằng dấu \texttt{'.'} sau đó bỏ chúng vào list. Ví dụ: text = [[word1, word2, word3], [word1, word2, word3]]
+\begin{lstlisting}[language=python]
+data[0][1].split('.')[:5]
+\end{lstlisting}
+\includeImage{1}{17}{}
+
+\vskip 0.5cm
+\indent Chúng ta đã có một data là một list of sentence. Bây giờ chúng ta cần tách các sentence thành list of words dựa vào kí tự \texttt{' '}.
+\begin{lstlisting}[language=python]
+corpus = []
+for line in data[0][1].split('.'):
+  words = [x for x in line.split()]
+  corpus.append(words)
+\end{lstlisting}
+
+\vskip 0.5cm
+\indent Bây giờ, input của chúng ta đã có dạng chuẩn của Gensim yêu cầu là list of lists.
+\begin{lstlisting}[language=python]
+corpus[:2]
+\end{lstlisting}
+\includeImage{1}{18}{}
+
+\vskip 0.5cm
+\indent Các đoạn code trên chúng ta chỉ thử trên một sentence, bây giờ chúng ta sẽ chuyển đổi toàn bộ dataset.
+\begin{lstlisting}[language=python]
+data = data[0].map(lambda x: x.split('.'))
+
+corpus = []
+for i in (range(len(data))):
+  for line in data[i]:
+    words = [x for x in line.split()]
+    corpus.append(words)
+
+corpus[:2]
+\end{lstlisting}
+\includeImage{1}{19}{}
+
+\vskip 0.5cm
+\indent Giả sử chúng ta có từ \texttt{'new\ york'}, chúng ta sẽ thêm dấu gạch \texttt{'\_'} để thay cho khoảng trắng. Chúng ta thiết lập \texttt{min\_count=25}, tức ta bỏ qua tất cả các từ có tần số xuất hiện dưới 25.
+\begin{lstlisting}[language=python]
+phrases = Phrases(sentences=corpus, min_count=25, threshold=50)
+bigram = Phraser(phrases)
+
+for index,sentence in enumerate(corpus):
+  corpus[index] = bigram[sentence]
+\end{lstlisting}
+
+\vskip 0.5cm
+\indent Kiểm tra dữ liệu.
+\begin{lstlisting}[language=python]
+corpus[111]
+\end{lstlisting}
+\includeImage{1}{20}{}
+
+\vskip 0.5cm
+\indent Bây giờ chúng ta sẽ build model word2vec, trước tiên chúng ta cần xác định một vài hyperparams.
+\begin{itemize}
+  \item \texttt{vector\_size}: kích thước của embedding vector. Tùy chỉnh dựa vào kích thước của dataset mà ta có.
+  \item \texttt{window\_size}: kích thước của cửa sổ context words.
+  \item \texttt{min\_count}: tần số thấp nhất của từ trong dataset.
+  \item \texttt{workers}: chỉ định số nhân CPU dùng để training model. 
+  \item \texttt{sg}: bằng $1$ sẽ dùng skip-gram method để training, nếu $0$ thì chỉ định CBOW method để training.
+\end{itemize}
+\begin{lstlisting}[language=python]
+vector_size = 100
+window_size = 2
+epochs = 100
+min_count = 2
+workers = 4
+sg = 1
+\end{lstlisting}
+
+\vskip 0.5cm
+\indent Training model.
+\begin{lstlisting}[language=python]
+  model = Word2Vec(corpus, sg=sg, window=window_size, vector_size=vector_size, min_count=min_count, workers=workers, epochs=epochs)
+\end{lstlisting}
+
+\vskip 0.5cm
+\indent Lưu lại Word2Vec model vào folder \texttt{model}.
+\begin{lstlisting}[language=python]
+model.save('./model/word2vec.model')
+\end{lstlisting}
+
+\vskip 0.5cm
+\indent Đánh giá Word2Vec model. Gensim cung cấp phương thức \texttt{most\_similar()} sẽ cho ta biết những từ nào tương đồng với một từ được cung cấp. Dưới đây từ \texttt{san\_deigo} được cung cấp là đầu vào, ta cần tìm các từ mà có sự tương đồng với từ này.
+\begin{lstlisting}[language=python]
+model.wv.most_similar('san_diego')
+\end{lstlisting}
+\includeImage{1}{21}{}
+
+\vskip 0.5cm
+\indent Có thể áp dụng các phép toán số học trên vector, ví dụ:
+$$woman + king - man = queen$$
+\begin{lstlisting}[language=python]
+model.wv.most_similar(positive=['woman', 'king'], negative=['man'], topn=1)
+\end{lstlisting}
+\includeImage{1}{22}{}
+
+\vskip 0.5cm
+\indent Chúng ta có thể tìm hiểu xem từ nào là không phù hợp với đa số các từ được cung cấp trong list.
+\begin{lstlisting}[language=python]
+text = ['los_angeles','indianapolis', 'holiday', 'san_antonio','new_york']
+model.wv.doesnt_match(text)
+\end{lstlisting}
+\includeImage{1}{23}{}
+
+\vskip 0.5cm
+\indent Sử dụng tensorboard để trực quan hóa word2vec. Import các thư viện cần thiết. 
+\begin{lstlisting}[language=python]
+import warnings
+warnings.filterwarnings(action='ignore')
+
+
+import tensorflow as tf
+from tensorflow.contrib.tensorboard.plugins import projector
+tf.logging.set_verbosity(tf.logging.ERROR)
+
+import numpy as np
+import gensim
+import os
+\end{lstlisting}
+
+\vskip 0.5cm
+\indent Load model Word2Vec.
+\begin{lstlisting}[language=python]
+file_name = "./model/word2vec.model"
+model = gensim.models.keyedvectors.KeyedVectors.load(file_name)
+\end{lstlisting}
+
+\vskip 0.5cm
+\indent Sau khi load model thành công, chúng ta cần lưu lại số từ vựng có trong model.
+\begin{lstlisting}[language=python]
+max_size = len(model.wv.key_to_index.keys())-1
+\end{lstlisting}
+
+\vskip 0.5cm
+\indent Chúng ta biết rằng số chiều của các word vector là $\boldsymbol{V} \times \boldsymbol{N}$. Tức số từng vựng $\boldsymbol{V} \times$ số neuron trong hidden layer $\boldsymbol{N}$. Bây giờ chúng ta sẽ tạo ma trận $\boldsymbol{W}$ và lưu vào biến \texttt{w2v}.
+\begin{lstlisting}[language=python]
+w2v = np.zeros((max_size, model.layer1_size))
+\end{lstlisting}
+
+\vskip 0.5cm
+\indent Tiếp theo, chúng ta sẽ lưu các từ cùng các word vectors vào file \texttt{metadata.tsv}.
+\begin{lstlisting}[language=python]
+if not os.path.exists('projections'):
+  os.makedirs('projections')
+  
+with open("projections/metadata.tsv", 'w+') as file_metadata:    
+  for i, word in enumerate(model.wv.index_to_key[:max_size]):
+    # lưu embedding vector
+    w2v[i] = model.wv[word]
+      
+    # lưu word tương ứng 
+    file_metadata.write(word + '\n')
+\end{lstlisting}
+
+\vskip 0.5cm
+\indent Khởi tạo TensorFlow session.
+\begin{lstlisting}[language=python]
+sess = tf.InteractiveSession()
+\end{lstlisting}
+
+\vskip 0.5cm
+\indent Tạo biến \texttt{embeddings} để chứa các từ nhúng và các thiết lập cần thiết cho TensorBoard.
+\begin{lstlisting}[language=python]
+with tf.device("/gpu:0"):
+  embedding = tf.Variable(w2v, trainable=False, name='embedding')
+
+# cấu hình cần thiết
+tf.global_variables_initializer().run()
+saver = tf.train.Saver()
+writer = tf.summary.FileWriter('projections', sess.graph)
+
+config = projector.ProjectorConfig()
+embed = config.embeddings.add()
+\end{lstlisting}
+
+\vskip 0.5cm
+\indent Chỉ định tập tin \texttt{metadata.tsv} để trực quan hóa.
+\begin{lstlisting}[language=python]
+embed.tensor_name = 'embedding'
+embed.metadata_path = 'metadata.tsv'
+\end{lstlisting}
+
+\vskip 0.5cm
+\indent Lưu lại model dùng để visualization của TensorBoard.
+\begin{lstlisting}[language=python]
+projector.visualize_embeddings(writer, config)
+saver.save(sess, 'projections/model.ckpt', global_step=max_size)
+\end{lstlisting}
+
+\vskip 0.5cm
+\indent Mở terminal và nhập lệnh dưới đây để xem kết quả trực quan.
+\begin{lstlisting}[language=bash]
+# bash
+tensorboard --logdir=projections --port=8000
+\end{lstlisting}
+\includeImage{1}{24}{}
+
+\begin{tcolorbox}[grow to left by=-0.6cm]
+  \textbf{Nhận xét}
+  \begin{itemize}
+    \item Các từ này được giảm chiều từ 100 xuống 3 bằng PCA và biểu diễn trong không gian 3 chiều.
+    \item Khi ta tìm từ \texttt{'san\_diego'} ta sẽ thấy được các từ được cho là tương tự với từ này trong TensorBoard (các từ nằm trong vùng xanh).
+  \end{itemize}
+\end{tcolorbox}
+
+
+
+\subsection{Xây dựng Word2Vec model sử dụng build-in model của Báo Mới}
+Import các package cần thiết.
+\begin{lstlisting}[language=python]
+import warnings
+warnings.filterwarnings('ignore')
+
+# data processing
+import pandas as pd
+import re
+from nltk.corpus import stopwords
+stopWords = stopwords.words('english')
+
+# modelling
+from gensim.models import Word2Vec, KeyedVectors
+from gensim.models import Phrases
+from gensim.models.phrases import Phraser
+\end{lstlisting}
+
+\vskip 0.5cm
+\indent Load Vietnamese Word2Vec model.
+\begin{lstlisting}[language=python]
+  model = KeyedVectors.load_word2vec_format('./model/baomoi.vn.model.bin', binary=True)
+\end{lstlisting}
+
+\vskip 0.5cm
+\indent Đánh giá Word2Vec model. Gensim cung cấp phương thức \texttt{most\_similar()} sẽ cho ta biết những từ nào tương đồng với một từ được cung cấp. Dưới đây từ \texttt{san\_deigo} được cung cấp là đầu vào, ta cần tìm các từ mà có sự tương đồng với từ này.
+\begin{lstlisting}[language=python]
+model.most_similar('khoa_học_tự_nhiên')
+\end{lstlisting}
+\includeImage{1}{25}{}
+
+\vskip 0.5cm
+\indent Có thể áp dụng các phép toán số học trên vector, ví dụ:
+$$\text{toán} + \text{khoa\_học} - \text{kinh\_tế} = \text{toán\_tin}$$
+
+\begin{lstlisting}[language=python]
+  model.most_similar(positive=['toán', 'khoa_học'], negative=['kinh_tế'], topn=10)
+\end{lstlisting}
+\includeImage{1}{26}{}
+
+\vskip 0.5cm
+\indent Chúng ta có thể tìm hiểu xem từ nào là không phù hợp với đa số các từ được cung cấp trong list.
+\begin{lstlisting}[language=python]
+  text = ['máy_tính','khoa_học_máy_tính', 'công_nghệ_phần_mềm', 'kinh_tế', 'đại_số']
+model.doesnt_match(text)
+\end{lstlisting}
+\includeImage{1}{27}{}
+
+\vskip 0.5cm
+\indent Data visualization cho Word2Vec model của Báo Mới. Import các package cần thiết.
+\begin{lstlisting}[language=python]
+import warnings
+warnings.filterwarnings(action='ignore')
+
+
+import tensorflow as tf
+from tensorflow.contrib.tensorboard.plugins import projector
+tf.logging.set_verbosity(tf.logging.ERROR)
+
+import numpy as np
+import gensim
+import os
+\end{lstlisting}
+
+\vskip 0.5cm
+\indent Load Word2Vec model
+\begin{lstlisting}[language=python]
+  file_name = "./model/baomoi.vn.model.bin"
+  model = gensim.models.keyedvectors.KeyedVectors.load_word2vec_format(file_name, binary=True)
+\end{lstlisting}
+
+\vskip 0.5cm
+\indent Sau khi load model thành công, chúng ta cần lưu lại số từ vựng có trong model.
+\begin{lstlisting}[language=python]
+  max_size = len(model.key_to_index.keys())-1
+\end{lstlisting}
+
+\vskip 0.5cm
+\indent Chúng ta biết rằng số chiều của các word vector là $\boldsymbol{V} \times \boldsymbol{N}$. Tức số từng vựng $\boldsymbol{V} \times$ số neuron trong hidden layer $\boldsymbol{N}$. Bây giờ chúng ta sẽ tạo ma trận $\boldsymbol{W}$ và lưu vào biến \texttt{w2v}.
+\begin{lstlisting}[language=python]
+  w2v = np.zeros((max_size, model.vector_size))
+\end{lstlisting}
+
+\vskip 0.5cm
+\indent Tiếp theo, chúng ta sẽ lưu các từ cùng các word vectors vào file \texttt{metadata.tsv}.
+\begin{lstlisting}[language=python]
+  if not os.path.exists('projections_vi'):
+  os.makedirs('projections_vi')
+  
+  with open("projections_vi/metadata.tsv", 'w+') as file_metadata:    
+  for i, word in enumerate(model.index_to_key[:max_size]):
+  # lưu embedding vector
+  w2v[i] = model[word]
+  
+  # lưu word tương ứng 
+  file_metadata.write(word + '\n')
+\end{lstlisting}
+
+
+\vskip 0.5cm
+\indent Khởi tạo TensorFlow session.
+\begin{lstlisting}[language=python]
+sess = tf.InteractiveSession()
+\end{lstlisting}
+
+\vskip 0.5cm
+\indent Tạo biến \texttt{embeddings} để chứa các từ nhúng và các thiết lập cần thiết cho TensorBoard.
+\begin{lstlisting}[language=python]
+  with tf.device("/gpu:0"):
+  embedding = tf.Variable(w2v, trainable=False, name='embedding')
+  
+  # run TensorFlow session and set up some configuration
+  tf.global_variables_initializer().run()
+  saver = tf.train.Saver()
+  writer = tf.summary.FileWriter('projections_vi', sess.graph)
+  
+  config = projector.ProjectorConfig()
+  embed = config.embeddings.add()
+\end{lstlisting}
+
+\vskip 0.5cm
+\indent Chỉ định tập tin để \texttt{metadata.tsv} để trực quan hóa bằng TensorBoard.
+\begin{lstlisting}[language=python]
+  embed.tensor_name = 'embedding'
+  embed.metadata_path = 'metadata.tsv'
+\end{lstlisting}
+
+\vskip 0.5cm
+\indent Lưu lại model dùng để visualization của TensorBoard.
+\begin{lstlisting}[language=python]
+projector.visualize_embeddings(writer, config)
+saver.save(sess, 'projections_vi/model.ckpt', global_step=max_size)
+\end{lstlisting}
+
+\vskip 0.5cm
+\indent Mở terminal và nhập lệnh dưới đây để trực quan hóa.
+\begin{lstlisting}[language=bash]
+  # bash
+  tensorboard --logdir=projections_vi --port=8000
+\end{lstlisting}
+\includeImage{1}{28}{}
+
+\begin{tcolorbox}[grow to left by=-0.6cm]
+  \textbf{Nhận xét}
+  \begin{itemize}
+    \item Các từ này được giảm chiều từ 300 xuống 3 bằng PCA và biểu diễn trong không gian 3 chiều.
+    \item Khi ta tìm từ \texttt{'khoa\_học\_tự\_nhiên'} ta sẽ thấy được các từ được cho là tương tự với từ này trong TensorBoard (các từ nằm trong vùng xanh).
+  \end{itemize}
+\end{tcolorbox}
+
 \section{Tài nguyên tham khảo}
 \begin{itemize}
   \item \textbf{\color{teal} Hands-On Deep Learning Algorithms with Python} - \textit{(chương 7)}, link sách tại \href{https://www.amazon.com/Hands-Deep-Learning-Algorithms-Python/dp/1789344158}{\color{blue} https://www.amazon.com/Hands-Deep-Learning-Algorithms-Python/dp/1789344158}.
